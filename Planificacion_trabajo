@@ -1,0 +1,27 @@
+Trabajo fina soa
+
+
+------------------------------
+Crear sistema de usuarios{
+	admin : ver todos los usuarios y su gestios
+	usuario : ve solo sus datos
+}
+
+Sistema de version de corriculum{
+	el usuario crea el curriculum 
+	cuando actualiza puede actualizar solo los campos o crear una nueva version pulsando un boton
+}
+funciones procesar archivos entrada{
+	funcion procesar xml
+	funcion procesar csv
+	funcion procesar json
+}
+------------------------------------------
+parte cliente{
+	login
+	registro
+}
+parte servidor{
+	procesar datos
+	toda la logica y luego enviar las vistas al usuario
+}
