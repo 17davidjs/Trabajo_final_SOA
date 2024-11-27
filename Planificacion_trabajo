@@ -25,3 +25,17 @@ parte servidor{
 	procesar datos
 	toda la logica y luego enviar las vistas al usuario
 }
+lenguajes a emplear {
+	Base de datos phpMyAdmin
+	PHP
+	HTML
+	CSS
+}
+Base de datos {
+	Nombre: SOA_FINAL
+	Tabla curriculums:
+		ID, nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, 
+		fecha_curriculum, formacion_academica, experiencia_laboral, idiomas, habilidades, datos_interes
+	Tabla usuarios
+		ID, nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contraseña
+}
