@@ -59,3 +59,4 @@ Base de datos
 		Tabla usuarios
 		ID, nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contraseña
 }
+preuba dia 3
