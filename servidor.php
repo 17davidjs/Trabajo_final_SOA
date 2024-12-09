@@ -32,6 +32,71 @@ function guardarToken($conn, $usuario, $token) {
     $stmt->close();
 }
 
+function verificarToken($conn, $token){
+    // Buscar el token en la base de datos
+    $sql = "SELECT usuario FROM usuarios WHERE token = ?";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error en la preparación de la consulta: " . $conn->error));
+        exit;
+    }
+
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) {
+        http_response_code(401);
+        echo json_encode(array("response" => 401, "texto" => "Token no válido"));
+        exit;
+    }
+
+    $stmt->bind_result($usuario);
+    $stmt->fetch();
+    $stmt->close();
+
+    return $usuario; // Retorna el nombre de usuario si el token es válido
+}
+
+// Verificar si el token corresponde al usuario autorizado
+function verificarToken_Usuario($conn, $token, $usuario_autorizado){
+    // Consultar la base de datos para verificar si el token corresponde al usuario
+    $sql = "SELECT usuario FROM usuarios WHERE token = ?";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error en la preparación de la consulta: " . $conn->error));
+        exit;
+    }
+
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) {
+        http_response_code(401);
+        echo json_encode(array("response" => 401, "texto" => "Token no válido"));
+        exit;
+    }
+
+    $stmt->bind_result($usuario);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Verificar que el usuario es el autorizado
+    if ($usuario !== $usuario_autorizado) {
+        http_response_code(403); // Forbidden
+        echo json_encode(array("response" => 403, "texto" => "Acceso denegado. El usuario no está autorizado."));
+        exit;
+    }
+
+    return true; // El token es válido y el usuario está autorizado
+}
+
+
 $inputvacio = file_get_contents('php://input');
 $datos = json_decode($inputvacio, true);
 
@@ -120,30 +185,95 @@ function registro($conn,$datos){
     $stmt->close();
 }
 
+function login($conn, $datos){
+    if(!isset($datos["usuario"]) || !isset($datos["contraseña"])){
+        http_response_code(400);
+        echo json_encode(array("response" => 400, "texto" => "Datos no válidos"));
+        exit;
+    }
+
+    $usuario = $datos["usuario"];
+    $contraseña = $datos["contraseña"];
+
+    $sql = "SELECT usuario, contraseña FROM usuarios WHERE usuario = ?";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error en la preparación de la consulta: " . $conn->error));
+        exit;
+    }
+
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) {
+        http_response_code(401);
+        echo json_encode(array("response" => 401, "texto" => "Usuario no encontrado"));
+        exit;
+    }
+
+    $stmt->bind_result($usuario, $contraseña_hash); // Se obtiene la contraseña hasheada del usuario
+    $stmt->fetch();
+    $stmt->close();
+
+    //verificamos si la contraseña es correcta
+    if (!password_verify($contraseña, $contraseña_hash)) {
+        http_response_code(401); // Respuesta 401 Unauthorized
+        echo json_encode(array("response" => 401, "texto" => "Usuario o contraseña incorrectos."));
+        exit;
+    }
+
+    $token=generarToken();
+
+    guardarToken($conn, $usuario, $token);
+
+    http_response_code(200);
+    echo json_encode(array("response" => 200, "texto" => "Login exitoso", "token" => $token));
+
+}
+
 
 $conn->close();
+//codigo para usar el token en otras paginas de acceso privado
+/*
+session_start();
+if (!isset($_SESSION["token"])) {
+    echo "No tienes acceso. Por favor, inicia sesión.";
+    exit;
+}
+
+// Usar el token para realizar una solicitud a otro endpoint
+$token = $_SESSION["token"];
+$handle = curl_init("http://localhost/SOA/api/protected-resource"); // Cambiar la ruta a la q toque 
+curl_setopt($handle, CURLOPT_HTTPHEADER, array(
+    'Authorization: Bearer ' . $token,
+    'Content-Type: application/json'
+));
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($handle);
+$responseData = json_decode($response, true);
+
+if ($responseData["response"] == 200) {
+    echo "Acceso al recurso protegido: " . $responseData["data"];
+} else {
+    echo "Error: " . $responseData["texto"];
+}
+curl_close($handle);
+
+
+
+// Suponiendo que el token está guardado en la sesión lo mandamos por Curl desde cliente
+$token = $_SESSION["token"];
+$handle = curl_init("http://localhost/SOA/servidorFINAL.php");
+curl_setopt($handle, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $token // Agregar el token en la cabecera
+));
+
+$response = curl_exec($handle);
+
+*/
 ?>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-?>
