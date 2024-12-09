@@ -262,8 +262,9 @@ if ($responseData["response"] == 200) {
 }
 curl_close($handle);
 
+*/
 
-
+/*
 // Suponiendo que el token está guardado en la sesión lo mandamos por Curl desde cliente
 $token = $_SESSION["token"];
 $handle = curl_init("http://localhost/SOA/servidorFINAL.php");
