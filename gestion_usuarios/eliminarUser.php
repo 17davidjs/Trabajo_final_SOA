@@ -37,7 +37,7 @@ if(isset($_SESSION["usuario"]) && isset($_SESSION["token"]) ){
     }
 }else{
     echo "debe iniciar sesion para eliminar su cuenta<br>";
-    echo "<a href='../login/login.php'>iniciar sesion</a>";
+    echo "<a href='login.php'>iniciar sesion</a>";
 }
 
 
