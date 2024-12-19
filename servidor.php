@@ -43,7 +43,7 @@
             echo json_encode(array("response" => 401, "texto" => "Token no válido"));
             exit;
         }
-
+        $usuario = '';
         $stmt->bind_result($usuario);
         $stmt->fetch();
         $stmt->close();
@@ -76,6 +76,7 @@
             exit;
         }
 
+        $usuario = '';
         $stmt->bind_result($usuario);
         $stmt->fetch();
         $stmt->close();
@@ -224,6 +225,7 @@
             exit;
         }
 
+        $contraseña_hash = '';
         $stmt->bind_result($usuario, $contraseña_hash); // Se obtiene la contraseña hasheada del usuario
         $stmt->fetch();
         $stmt->close();
