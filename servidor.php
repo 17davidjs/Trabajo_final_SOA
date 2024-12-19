@@ -20,37 +20,35 @@
         $stmt->close();
     }
 
-    function verificarToken($conn, $token)
-    {
-        // Buscar el token en la base de datos
+    function verificarToken($conn, $token){
+        // Buscar el token en la base de datos y devuelve el nombre de usuario asociado
         $sql = "SELECT usuario FROM usuarios WHERE token = ?";
         $stmt = $conn->prepare($sql);
-
-        if ($stmt === false)
-        {
+    
+        if ($stmt === false) {
             http_response_code(500);
             echo json_encode(array("response" => 500, "texto" => "Error en la preparación de la consulta: " . $conn->error));
             exit;
         }
-
+    
         $stmt->bind_param("s", $token);
         $stmt->execute();
         $stmt->store_result();
-
-        if ($stmt->num_rows === 0)
-        {
+    
+        if ($stmt->num_rows === 0) {
             http_response_code(401);
             echo json_encode(array("response" => 401, "texto" => "Token no válido"));
             exit;
         }
+    
         $usuario = '';
         $stmt->bind_result($usuario);
         $stmt->fetch();
         $stmt->close();
-
+    
         return $usuario; // Retorna el nombre de usuario si el token es válido
     }
-
+    
     // Verificar si el token corresponde al usuario autorizado
     function verificarToken_Usuario($conn, $token, $usuario_autorizado)
     {
@@ -105,20 +103,21 @@
     }
 
     // Seleccionar la función a ejecutar
-    switch ($datos["funcion"])
-    {
+    switch ($datos["funcion"]) {
         case "registro":
             registro($conn, $datos);
             break;
         case "login":
             login($conn, $datos);
             break;
+        case "eliminarUser":
+            eliminarUser($conn, $datos);
         default:
             http_response_code(400);
             echo json_encode(array("response" => 400, "texto" => "Función no válida"));
             break;
     }
-
+    
 
     function registro($conn,$datos)
     {
@@ -192,60 +191,109 @@
         $stmt->close();
     }
 
-    function login($conn, $datos)
-    {
-        if(!isset($datos["usuario"]) || !isset($datos["contraseña"]))
-        {
+    function login($conn, $datos){
+        if(!isset($datos["usuario"]) || !isset($datos["contraseña"])){
             http_response_code(400);
             echo json_encode(array("response" => 400, "texto" => "Datos no válidos"));
             exit;
         }
-
+    
         $usuario = $datos["usuario"];
         $contraseña = $datos["contraseña"];
-
+    
         $sql = "SELECT usuario, contraseña FROM usuarios WHERE usuario = ?";
         $stmt = $conn->prepare($sql);
-
-        if ($stmt === false)
-        {
+    
+        if ($stmt === false) {
             http_response_code(500);
             echo json_encode(array("response" => 500, "texto" => "Error en la preparación de la consulta: " . $conn->error));
             exit;
         }
-
+    
         $stmt->bind_param("s", $usuario);
         $stmt->execute();
         $stmt->store_result();
-
-        if ($stmt->num_rows === 0)
-        {
+    
+        if ($stmt->num_rows === 0) {
             http_response_code(401);
             echo json_encode(array("response" => 401, "texto" => "Usuario no encontrado"));
             exit;
         }
-
         $contraseña_hash = '';
         $stmt->bind_result($usuario, $contraseña_hash); // Se obtiene la contraseña hasheada del usuario
         $stmt->fetch();
         $stmt->close();
-
+    
         //verificamos si la contraseña es correcta
-        if (!password_verify($contraseña, $contraseña_hash))
-        {
+        if (!password_verify($contraseña, $contraseña_hash)) {
             http_response_code(401); // Respuesta 401 Unauthorized
             echo json_encode(array("response" => 401, "texto" => "Usuario o contraseña incorrectos."));
             exit;
         }
-
-        $token=generarToken();
-
+    
+        if(isset($_SESSION["token"])){
+            $token = $_SESSION["token"];
+        }else{
+            $token=generarToken();   
+        }
         guardarToken($conn, $usuario, $token);
-
         http_response_code(200);
         echo json_encode(array("response" => 200, "texto" => "Login exitoso", "token" => $token));
-
+    
     }
+
+    function eliminarUser($conn, $datos){
+        // Verificar si los datos requeridos están presentes
+        if (!isset($datos["token"]) || !isset($datos["usuario"])) {
+            http_response_code(400); // Bad Request
+            echo json_encode(array("response" => 400, "texto" => "Datos no válidos para eliminar usuario"));
+            exit;
+        }
+    
+        $token = $datos["token"];
+        $usuario = $datos["usuario"];
+    
+        // Verificar si el token es válido y obtener el nombre de usuario asociado
+        $usuarioValidado = verificarToken($conn, $token);
+    
+        // Si el token no es válido o el usuario no coincide
+        if ($usuarioValidado !== $usuario) {
+            http_response_code(401); // Unauthorized
+            echo json_encode(array("response" => 401, "texto" => "Token no válido o no coincide con el usuario"));
+            exit;
+        }
+    
+        // Proceder a eliminar el usuario de la base de datos
+        $sql = "DELETE FROM usuarios WHERE usuario = ?";
+        $stmt = $conn->prepare($sql);
+    
+        // Verificar si la preparación de la consulta fue exitosa
+        if ($stmt === false) {
+            http_response_code(500); // error interno 
+            echo json_encode(array("response" => 500, "texto" => "Error al preparar la consulta: " . $conn->error));
+            exit;
+        }
+    
+        // Vincular parámetros y ejecutar la consulta
+        $stmt->bind_param("s", $usuario);
+    
+        // Ejecutar la consulta y verificar si se eliminó correctamente
+        if ($stmt->execute()) {
+            // Si la eliminación fue exitosa
+            http_response_code(200); // OK
+            echo json_encode(array("response" => 200, "texto" => "Usuario eliminado correctamente"));
+            echo "Ir al registro";
+            echo"<a href='registro.php'>Registro</a>";
+        } else {
+            // Si hubo un error al eliminar el usuario
+            http_response_code(500); // Internal Server Error
+            echo json_encode(array("response" => 500, "texto" => "Error al eliminar el usuario: " . $stmt->error));
+        }
+    
+        // Cerrar la declaración de la consulta
+        $stmt->close();
+    }
+    
 
 
     $conn->close();

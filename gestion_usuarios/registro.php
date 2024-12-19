@@ -43,7 +43,7 @@
         );
 
         // Enviamos los datos al servidor.php usando cURL
-        $handle = curl_init("http://localhost/Trabajo_final_SOA/servidor.php");
+        $handle = curl_init("../servidor.php");
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($data)); // Convertimos los datos a JSON
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
