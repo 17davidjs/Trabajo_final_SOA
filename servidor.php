@@ -282,6 +282,8 @@
             // Si la eliminación fue exitosa
             http_response_code(200); // OK
             echo json_encode(array("response" => 200, "texto" => "Usuario eliminado correctamente"));
+            session_unset();
+            session_destroy();
             echo "Ir al registro";
             echo"<a href='registro.php'>Registro</a>";
         } else {
