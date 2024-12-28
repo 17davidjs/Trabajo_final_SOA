@@ -28,15 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `curriculums` (
-  `ID` int(11) NOT NULL, --id del CV
-  `usuario_id` int(11) NOT NULL, --campo para conectar ambas tablas
-  `nombre` varchar(100) NOT NULL, --datos a guardar en el CV
+  `ID` int(11) NOT NULL, 
+  `usuario_id` int(11) NOT NULL, 
+  `nombre` varchar(100) NOT NULL, 
   `apellidos` varchar(100) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `correo_electronico` varchar(100) NOT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `fecha_curriculum` date NOT NULL, --fecha de creacion del CV
+  `fecha_curriculum` date NOT NULL, 
   `formacion_academica` text DEFAULT NULL,
   `experiencia_laboral` text DEFAULT NULL,
   `idiomas` text DEFAULT NULL,
@@ -51,16 +51,16 @@ CREATE TABLE `curriculums` (
 --
 
 CREATE TABLE `usuarios` (
-  `ID` int(11) NOT NULL, -- id del usuario
-  `nombre` varchar(100) NOT NULL, --datos del usuario
+  `ID` int(11) NOT NULL, 
+  `nombre` varchar(100) NOT NULL, 
   `apellidos` varchar(100) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `correo_electronico` varchar(100) NOT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `usuario` varchar(50) NOT NULL, --login
+  `usuario` varchar(50) NOT NULL, 
   `contraseña` varchar(255) NOT NULL,
-  `token` varchar(20) DEFAULT NULL
+  `token` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
