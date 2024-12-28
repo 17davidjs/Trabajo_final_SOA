@@ -6,15 +6,15 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST")
     {
         // Recoger los datos del formulario
-        $nombre = $_POST["nombre"];
-        $apellidos = $_POST["apellidos"];
-        $fecha_nacimiento = $_POST["fecha_nacimiento"];
-        $direccion = $_POST["direccion"];
-        $correo_electronico = $_POST["correo_electronico"];
-        $telefono = $_POST["telefono"];
-        $usuario = $_POST["usuario"];
-        $contrasena = $_POST["contrasena"];
-        $contrasena2 = $_POST["contrasena2"];
+        $nombre = htmlspecialchars(trim($_POST["nombre"]));
+    $apellidos = htmlspecialchars(trim($_POST["apellidos"]));
+    $fecha_nacimiento = htmlspecialchars(trim($_POST["fecha_nacimiento"]));
+    $direccion = htmlspecialchars(trim($_POST["direccion"]));
+    $correo_electronico = filter_var($_POST["correo_electronico"], FILTER_SANITIZE_EMAIL);
+    $telefono = htmlspecialchars(trim($_POST["telefono"]));
+    $usuario = htmlspecialchars(trim($_POST["usuario"]));
+    $contraseña = $_POST["contraseña"];
+    $contraseña2 = $_POST["contraseña2"];
 
         if ($contrasena !== $contrasena2)
         {
