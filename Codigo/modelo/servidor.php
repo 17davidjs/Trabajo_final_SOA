@@ -145,7 +145,7 @@ function login($datos) {
     $usuario = $datos["usuario"];
     $contrasena = $datos["contrasena"];
 
-    $sql = "SELECT usuario, contrasena FROM usuarios WHERE usuario = ?";
+    $sql = "SELECT usuario, contrasena, role FROM usuarios WHERE usuario = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -165,7 +165,8 @@ function login($datos) {
     }
 
     $contrasena_hash = '';
-    $stmt->bind_result($usuario, $contrasena_hash);
+    $role = '';
+    $stmt->bind_result($usuario, $contrasena_hash, $role);
     $stmt->fetch();
     $stmt->close();
 
@@ -179,9 +180,9 @@ function login($datos) {
     guardarToken($usuario, $token);
 
     http_response_code(200);
-    echo json_encode(array("response" => 200, "texto" => "Login exitoso", "token" => $token));
-    
+    echo json_encode(array("response" => 200, "texto" => "Login exitoso", "token" => $token, "role" => $role)); // Aquí se incluye el role
 }
+
 
 function eliminarUser($datos) {
     global $conn;

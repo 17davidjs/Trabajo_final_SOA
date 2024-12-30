@@ -15,10 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "contrasena" => $contrasena,
     );
 
-    // Mostrar el array por pantalla
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
     // Enviamos los datos al servidor.php usando cURL
     $handle = curl_init("http://localhost/Trabajo_final_SOA/Codigo/modelo/servidor.php");
     curl_setopt($handle, CURLOPT_POST, true);
@@ -37,11 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error al decodificar JSON: " . json_last_error_msg();
             exit;
         }
+
         // Verificar si el login fue correcto
         if (isset($responseData["response"]) && $responseData["response"] == 200) {
-            echo "Login correcto<br>";
             $_SESSION["usuario"] = $usuario;
             $_SESSION["token"] = $responseData["token"];
+            $_SESSION["role"] = $responseData["role"];  // Guardamos el rol (user/admin)
+
             // Redirección segura
             header("Location: ../index.php");
             exit;
@@ -60,4 +58,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../vista/loginForm.php");
     exit;
 }
-?>

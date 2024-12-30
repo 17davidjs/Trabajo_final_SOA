@@ -1,3 +1,13 @@
+<?php
+session_start(); // Inicia la sesión
+$current_page = basename($_SERVER['PHP_SELF']);
+
+// Verifica si el usuario está autenticado
+$is_logged_in = isset($_SESSION['usuario']);
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol del usuario
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,22 +32,33 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <?php
-                    $current_page = basename($_SERVER['PHP_SELF']);
-                    ?>
                     <li class="nav-item">
                         <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/index.php">Inicio</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'loginForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Gestión de Currículums</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'eliminarUserForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/eliminarUserForm.php">Eliminar cuenta</a>
-                    </li>
+                    <?php if (!$is_logged_in): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $current_page == 'loginForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Login</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <span class="nav-link text-white">Bienvenido, <?php echo $_SESSION['usuario']; ?></span>
+                        </li>
+                        <?php if ($role == 'admin'): //USUARIO:admin, CONTRASEÑA:admin12345?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Gestión de Currículums</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo $current_page == 'eliminarUserForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/eliminarUserForm.php">Eliminar cuenta</a>
+                            </li>
+                        <?php endif; ?>
+                        <!-- Opción de Cerrar sesión -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Trabajo_final_SOA/Codigo/vista/logout.php">Cerrar sesión</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
     </nav>
+</body>
+</html>
