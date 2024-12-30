@@ -75,12 +75,98 @@ switch ($datos["funcion"]) {
     case "subirFichero":
         subir($datos);
         break;
+    case "getAllCurriculums":
+        getAllCurriculums();
+        break;
+    case "addCurriculum":
+        addCurriculum($datos);
+        break;
+    case "updateCurriculum":
+        updateCurriculum($datos);
+        break;
+    case "deleteCurriculum":
+        deleteCurriculum($datos);
+        break;
     default:
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "Función no válida"));
         break;
 }
 
+/****************************************************************************************************/
+// Funciones para la gestión de currículums
+/****************************************************************************************************/
+function getAllCurriculums() {
+    global $conn;
+    $sql = "SELECT * FROM curriculums";
+    $result = $conn->query($sql);
+
+    $curriculums = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $curriculums[] = $row;
+        }
+    }
+
+    echo json_encode($curriculums);
+}
+
+function addCurriculum($data) {
+    global $conn;
+    $sql = "INSERT INTO curriculums (usuario_id, nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, fecha_curriculum) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("issssss", $data['usuario_id'], $data['nombre'], $data['apellidos'], $data['fecha_nacimiento'], $data['direccion'], $data['correo_electronico'], $data['telefono']);
+
+    if ($stmt->execute()) {
+        http_response_code(201);
+        echo json_encode(array("response" => 201, "texto" => "Currículum agregado correctamente"));
+    } else {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error al agregar currículum: " . $stmt->error));
+    }
+
+    $stmt->close();
+}
+
+function updateCurriculum($data) {
+    global $conn;
+    $sql = "UPDATE curriculums SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, direccion = ?, correo_electronico = ?, telefono = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssssi", $data['nombre'], $data['apellidos'], $data['fecha_nacimiento'], $data['direccion'], $data['correo_electronico'], $data['telefono'], $data['id']);
+
+    if ($stmt->execute()) {
+        http_response_code(200);
+        echo json_encode(array("response" => 200, "texto" => "Currículum actualizado correctamente"));
+    } else {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error al actualizar currículum: " . $stmt->error));
+    }
+
+    $stmt->close();
+}
+
+function deleteCurriculum($data) {
+    global $conn;
+    $sql = "DELETE FROM curriculums WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $data['id']);
+
+    if ($stmt->execute()) {
+        http_response_code(200);
+        echo json_encode(array("response" => 200, "texto" => "Currículum eliminado correctamente"));
+    } else {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error al eliminar currículum: " . $stmt->error));
+    }
+
+    $stmt->close();
+}
+/****************************************************************************************************/
+
+
+/****************************************************************************************************/
+// Funciones para la autenticación de usuarios
+/****************************************************************************************************/
 function registro($datos) {
     global $conn;
     if (json_last_error() !== JSON_ERROR_NONE) {
@@ -224,7 +310,10 @@ function eliminarUser($datos) {
 
     $stmt->close();
 }
+/****************************************************************************************************/
 
+
+/// Funciones para subir currículums
 function subir($datos) {
     global $conn;
     if (!isset($datos["nombreArchivo"]) || !isset($datos["tipoArchivo"]) || !isset($datos["fichero"]) || !isset($datos["token"]) || !isset($datos["usuario"])) {
@@ -282,6 +371,7 @@ function subir($datos) {
     echo json_encode(array("response" => 200, "texto" => "Currículum procesado y almacenado correctamente"));
 }
 
+// Función para procesar un archivo CSV
 function procesarCSV($contenido, $usuario) {
     global $conn;
     $lineas = explode("\n", $contenido);
@@ -294,6 +384,7 @@ function procesarCSV($contenido, $usuario) {
     }
 }
 
+// Función para procesar un archivo JSON
 function procesarJSON($contenido, $usuario) {
     global $conn;
     $datos = json_decode($contenido, true);
@@ -306,6 +397,7 @@ function procesarJSON($contenido, $usuario) {
     guardarEnBaseDatos($datos, $usuario);
 }
 
+// Función para procesar un archivo XML
 function procesarXML($contenido, $usuario) {
     global $conn;
     $xml = simplexml_load_string($contenido);
@@ -319,6 +411,7 @@ function procesarXML($contenido, $usuario) {
     guardarEnBaseDatos($datos, $usuario);
 }
 
+// Función para guardar los datos en la base de datos
 function guardarEnBaseDatos($datos, $usuario) {
     global $conn;
     $usuario_id = "";

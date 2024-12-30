@@ -26,15 +26,15 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol de
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Sistema de Gestión</a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/index.php">Inicio</a>
-                    </li>
+                <li class="nav-item">
+                            <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/index.php">Inicio</a>
+                        </li>
                     <?php if (!$is_logged_in): ?>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $current_page == 'loginForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Login</a>
@@ -43,17 +43,24 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol de
                         <li class="nav-item">
                             <span class="nav-link text-white">Bienvenido, <?php echo $_SESSION['usuario']; ?></span>
                         </li>
+                        
                         <?php if ($role == 'admin'): //USUARIO:admin, CONTRASEÑA:admin12345?>
                             <li class="nav-item">
-                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Gestión de Currículums</a>
+                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumView.php">Gestión de Currículums</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link <?php echo $current_page == 'eliminarUserForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/eliminarUserForm.php">Eliminar cuenta</a>
                             </li>
                         <?php endif; ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Ver mis curriculums</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo $current_page == 'subirCVForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/subirCVForm.php">Subir curriculums</a>
+                            </li>
                         <!-- Opción de Cerrar sesión -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/Trabajo_final_SOA/Codigo/vista/logout.php">Cerrar sesión</a>
+                            <a class="nav-link btn btn-danger " href="/Trabajo_final_SOA/Codigo/vista/logout.php">Cerrar sesión</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -62,3 +69,5 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol de
     </nav>
 </body>
 </html>
+
+
