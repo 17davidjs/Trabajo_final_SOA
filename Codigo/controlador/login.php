@@ -1,18 +1,18 @@
 <?php
 session_start();
-require_once '../modelo/db.php';
+require_once '../config/db.php';
 
 // Verificar si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger los datos del formulario
     $usuario = $_POST["usuario"];
-    $contrasena = $_POST["contrasena"];
+    $contraseña = $_POST["contraseña"];
 
     // Preparamos los datos en formato array
     $data = array(
         "funcion" => "login",
         "usuario" => $usuario,
-        "contrasena" => $contrasena,
+        "contraseña" => $contraseña,
     );
 
     // Enviamos los datos al servidor.php usando cURL
