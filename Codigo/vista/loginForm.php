@@ -1,4 +1,6 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php'; 
+?>
 
     
 <main class="container my-5">
@@ -12,8 +14,8 @@
             <label for="contrasena" class="form-label">Contraseña:</label>
             <input type="password" name="contrasena" id="contrasena" class="form-control" required>
         </div>
+        <p>¿No tienes una cuenta? <a href="/Trabajo_final_SOA/Codigo/vista/registroForm.php">Regístrate aquí</a></p>
         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-        <a href="/Trabajo_final_SOA/Codigo/vista/registroForm.php" class="btn btn-secondary">Registrarse</a>
     </form>
 </main>
 

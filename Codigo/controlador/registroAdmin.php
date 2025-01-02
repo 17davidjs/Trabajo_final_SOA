@@ -3,7 +3,7 @@ session_start();
 require_once '../modelo/db.php';
 
     // Verificar si el formulario ha sido enviado
-    if ($_SERVER["REQUEST_METHOD"] == "POST")
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["admin"]))
     {
         // Recoger los datos del formulario
         $nombre = htmlspecialchars(trim($_POST["nombre"]));
@@ -40,13 +40,14 @@ require_once '../modelo/db.php';
             "telefono" => $telefono,
             "usuario" => $usuario,
             "contrasena" => $contrasena,
-            "role" => "usuario",
+            "role" => "admin",
         );
 
          // Mostrar el array por pantalla
     echo '<pre>';
     print_r($data);
     echo '</pre>';
+
         // Enviamos los datos al servidor.php usando cURL
         $handle = curl_init("http://localhost/Trabajo_final_SOA/Codigo/modelo/servidor.php");
         curl_setopt($handle, CURLOPT_POST, true);
@@ -67,6 +68,12 @@ require_once '../modelo/db.php';
             {
                 // Si la respuesta es JSON válida
                 echo "Respuesta del servidor: " . print_r($decodedResponse, true);
+                echo "<script>
+                        setTimeout(function() {
+                            window.location.href = '../index.php';
+                        }, 5000); // Redirige después de 5 segundos
+                    </script>";
+                exit;
             }
             else
             {
@@ -80,6 +87,6 @@ require_once '../modelo/db.php';
     else
     {
         // Mostrar el formulario HTML
-        include '../vista/registroForm.php';
+        include '../vista/admin/registroAdminForm.php';
     }
 ?>

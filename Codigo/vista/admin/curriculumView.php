@@ -1,4 +1,6 @@
-<?php include 'header.php'; ?>
+<?php 
+require_once('config_admin.php');
+?>
 
 <main class="container my-5">
     <h1>Gestión de Currículums</h1>

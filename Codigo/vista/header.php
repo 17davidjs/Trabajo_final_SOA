@@ -5,6 +5,29 @@ $current_page = basename($_SERVER['PHP_SELF']);
 // Verifica si el usuario está autenticado
 $is_logged_in = isset($_SESSION['usuario']);
 $role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol del usuario
+$usuario_nombre = isset($_SESSION['usuario']['nombre']) ? $_SESSION['usuario']['nombre'] : 'Usuario'; // Nombre del usuario autenticado
+$admin_id = isset($_SESSION['usuario']['id']) ? $_SESSION['usuario']['id'] : null; // ID del usuario autenticado
+
+// Página actual
+$nombreArchivo = basename($_SERVER['SCRIPT_NAME']);
+
+if($nombreArchivo == 'index.php') {
+  $paginaActual = 'Inicio';
+} else if($nombreArchivo == 'loginForm.php') {
+  $paginaActual = 'Login';
+} else if($nombreArchivo == 'registroForm.php') {
+  $paginaActual = 'Registro';
+} else if($nombreArchivo == 'vercvForm.php') {
+  $paginaActual = 'Mis currículums';
+} else if($nombreArchivo == 'subirCVForm.php') {
+  $paginaActual = 'Subir currículums';
+} else if($nombreArchivo == 'eliminarUserForm.php') {
+  $paginaActual = 'Configuración';
+} else if($nombreArchivo == 'curriculumView.php') {
+  $paginaActual = 'Gestión de Currículums';
+} else {
+  $paginaActual = '';
+}
 ?>
 
 
@@ -13,8 +36,14 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol de
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.I.I.S.I. - Sistema de Gestión de Currículums</title>
+    <title><?php echo $paginaActual; ?> - Sistema de Gestión de Currículums</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+    </style>
 </head>
 <body>
     <header class="bg-primary text-white py-4">
@@ -31,43 +60,55 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : null; // Obtén el rol de
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                <li class="nav-item">
-                            <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/index.php">Inicio</a>
-                        </li>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/index.php">Inicio</a>
+                    </li>
                     <?php if (!$is_logged_in): ?>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $current_page == 'loginForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Login</a>
                         </li>
-                    <?php else: ?>
                         <li class="nav-item">
-                            <span class="nav-link text-white">Bienvenido, <?php echo $_SESSION['usuario']; ?></span>
+                            <a class="nav-link <?php echo $current_page == 'registroForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/registroForm.php">Registro</a>
                         </li>
-                        
-                        <?php if ($role == 'admin'): //USUARIO:admin, CONTRASEÑA:admin12345?>
+                    <?php else: ?>
+                        <?php if ($role == 'admin'): ?>
                             <li class="nav-item">
-                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumView.php">Gestión de Currículums</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?php echo $current_page == 'eliminarUserForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/eliminarUserForm.php">Eliminar cuenta</a>
+                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/admin/curriculumView.php">Gestión de Currículums</a>
                             </li>
                         <?php endif; ?>
-                            <li class="nav-item">
-                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Ver mis curriculums</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?php echo $current_page == 'subirCVForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/subirCVForm.php">Subir curriculums</a>
-                            </li>
-                        <!-- Opción de Cerrar sesión -->
                         <li class="nav-item">
-                            <a class="nav-link btn btn-danger " href="/Trabajo_final_SOA/Codigo/vista/logout.php">Cerrar sesión</a>
+                            <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Ver mis currículums</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $current_page == 'subirCVForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/subirCVForm.php">Subir currículums</a>
                         </li>
                     <?php endif; ?>
                 </ul>
+                
+                <?php if ($is_logged_in): ?>
+                    <ul class="navbar-nav ms-auto">
+                        <?php if ($role == 'admin' && $admin_id == 0): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Trabajo_final_SOA/Codigo/vista/admin/registroAdminForm.php">Crear admin</a>
+                            </li>
+                        <?php endif; ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <?php echo htmlspecialchars($usuario_nombre); ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="/Trabajo_final_SOA/Codigo/vista/configuracion.php">Configuración</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="/Trabajo_final_SOA/Codigo/vista/logout.php">Cerrar sesión</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-

@@ -1,4 +1,6 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php'; 
+?>
 
 <main class="container my-5">
     <h1>Lista de Currículums</h1>

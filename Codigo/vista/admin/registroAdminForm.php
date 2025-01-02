@@ -1,10 +1,10 @@
 <?php 
-include 'header.php'; 
+require_once('config_admin.php');
 ?>
 
     <main class="container my-5">
-        <h1>Formulario de Registro</h1>
-        <form action="../controlador/registro.php" method="POST">
+        <h1>Registra un nuevo administrador:</h1>
+        <form action="../../controlador/registroAdmin.php" method="POST">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
                 <input type="text" name="nombre" id="nombre" class="form-control" required>
@@ -41,8 +41,7 @@ include 'header.php';
                 <label for="contrasena2" class="form-label">Repetir contraseña:</label>
                 <input type="password" name="contrasena2" id="contrasena2" class="form-control" required>
             </div>
-            <p>¿Ya tienes una cuenta? <a href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Inicia sesión</a></p>
-            <button type="submit" class="btn btn-primary">Registrarse</button>
+            <button type="submit" class="btn btn-primary" name="admin">Registrar admin</button>
         </form>
     </main>
 
