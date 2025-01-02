@@ -32,12 +32,12 @@
                 <input type="text" name="usuario" id="usuario" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="contrasena" class="form-label">Contraseña:</label>
-                <input type="password" name="contrasena" id="contrasena" class="form-control" required>
+                <label for="contraseña" class="form-label">Contraseña:</label>
+                <input type="password" name="contraseña" id="contraseña" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="contrasena2" class="form-label">Repetir contraseña:</label>
-                <input type="password" name="contrasena2" id="contrasena2" class="form-control" required>
+                <label for="contraseña2" class="form-label">Repetir contraseña:</label>
+                <input type="password" name="contraseña2" id="contraseña2" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-primary">Registrarse</button>
         </form>

@@ -175,7 +175,7 @@ function registro($datos) {
         exit;
     }
 
-    $required_fields = ["nombre", "apellidos", "fecha_nacimiento", "direccion", "correo_electronico", "telefono", "usuario", "contrasena"];
+    $required_fields = ["nombre", "apellidos", "fecha_nacimiento", "direccion", "correo_electronico", "telefono", "usuario", "contraseña"];
     foreach ($required_fields as $field) {
         if (!isset($datos[$field])) {
             http_response_code(400);
@@ -184,7 +184,7 @@ function registro($datos) {
         }
     }
 
-    if (strlen($datos["contrasena"]) < 8) {
+    if (strlen($datos["contraseña"]) < 8) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "La contraseña debe tener al menos 8 caracteres"));
         exit;
@@ -196,9 +196,9 @@ function registro($datos) {
         exit;
     }
 
-    $contrasena_hash = password_hash($datos["contrasena"], PASSWORD_DEFAULT);
+    $contraseña_hash = password_hash($datos["contraseña"], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contrasena) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contraseña) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -207,7 +207,7 @@ function registro($datos) {
         exit;
     }
 
-    $stmt->bind_param("ssssssss", $datos["nombre"], $datos["apellidos"], $datos["fecha_nacimiento"], $datos["direccion"], $datos["correo_electronico"], $datos["telefono"], $datos["usuario"], $contrasena_hash);
+    $stmt->bind_param("ssssssss", $datos["nombre"], $datos["apellidos"], $datos["fecha_nacimiento"], $datos["direccion"], $datos["correo_electronico"], $datos["telefono"], $datos["usuario"], $contraseña_hash);
 
     if ($stmt->execute()) {
         http_response_code(200);
@@ -222,16 +222,16 @@ function registro($datos) {
 
 function login($datos) {
     global $conn;
-    if (!isset($datos["usuario"]) || !isset($datos["contrasena"])) {
+    if (!isset($datos["usuario"]) || !isset($datos["contraseña"])) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "Datos no válidos"));
         exit;
     }
 
     $usuario = $datos["usuario"];
-    $contrasena = $datos["contrasena"];
+    $contraseña = $datos["contraseña"];
 
-    $sql = "SELECT usuario, contrasena, role FROM usuarios WHERE usuario = ?";
+    $sql = "SELECT usuario, contraseña, role FROM usuarios WHERE usuario = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -250,13 +250,13 @@ function login($datos) {
         exit;
     }
 
-    $contrasena_hash = '';
+    $contraseña_hash = '';
     $role = '';
-    $stmt->bind_result($usuario, $contrasena_hash, $role);
+    $stmt->bind_result($usuario, $contraseña_hash, $role);
     $stmt->fetch();
     $stmt->close();
 
-    if (!password_verify($contrasena, $contrasena_hash)) {
+    if (!password_verify($contraseña, $contraseña_hash)) {
         http_response_code(401);
         echo json_encode(array("response" => 401, "texto" => "Usuario o contraseña incorrectos."));
         exit;
@@ -314,159 +314,7 @@ function eliminarUser($datos) {
 
 
 /// Funciones para subir currículums
-function subir($datos) {
-    global $conn;
-    if (!isset($datos["nombreArchivo"]) || !isset($datos["tipoArchivo"]) || !isset($datos["fichero"]) || !isset($datos["token"]) || !isset($datos["usuario"])) {
-        http_response_code(400);
-        echo json_encode(array("response" => 400, "texto" => "Datos no válidos para subir el fichero"));
-        exit;
-    }
 
-    $nombreArchivo = $datos["nombreArchivo"];
-    $tipoArchivo = $datos["tipoArchivo"];
-    $contenidoArchivo = base64_decode($datos["fichero"]);
-    $token = $datos["token"];
-    $usuario = $datos["usuario"];
-
-    $usuarioValidado = verificarToken($token);
-
-    if ($usuarioValidado !== $usuario) {
-        http_response_code(401);
-        echo json_encode(array("response" => 401, "texto" => "Token no válido o no coincide con el usuario"));
-        exit;
-    }
-
-    $rutaTemporal = sys_get_temp_dir() . "/" . uniqid() . "_" . $nombreArchivo;
-    file_put_contents($rutaTemporal, $contenidoArchivo);
-
-    $contenido = file_get_contents($rutaTemporal);
-    if ($contenido === false) {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al leer el contenido del archivo"));
-        unlink($rutaTemporal);
-        exit;
-    }
-
-    switch ($tipoArchivo) {
-        case "text/csv":
-            procesarCSV($contenido, $usuarioValidado);
-            break;
-        case "application/json":
-            procesarJSON($contenido, $usuarioValidado);
-            break;
-        case "application/xml":
-        case "text/xml":
-            procesarXML($contenido, $usuarioValidado);
-            break;
-        default:
-            http_response_code(400);
-            echo json_encode(array("response" => 400, "texto" => "Tipo de archivo no soportado"));
-            unlink($rutaTemporal);
-            exit;
-    }
-
-    unlink($rutaTemporal);
-
-    http_response_code(200);
-    echo json_encode(array("response" => 200, "texto" => "Currículum procesado y almacenado correctamente"));
-}
-
-// Función para procesar un archivo CSV
-function procesarCSV($contenido, $usuario) {
-    global $conn;
-    $lineas = explode("\n", $contenido);
-    $cabeceras = str_getcsv(array_shift($lineas));
-
-    foreach ($lineas as $linea) {
-        $datos = str_getcsv($linea);
-        $datosInsertar = array_combine($cabeceras, $datos);
-        guardarEnBaseDatos($datosInsertar, $usuario);
-    }
-}
-
-// Función para procesar un archivo JSON
-function procesarJSON($contenido, $usuario) {
-    global $conn;
-    $datos = json_decode($contenido, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        http_response_code(400);
-        echo json_encode(array("response" => 400, "texto" => "JSON no válido"));
-        exit;
-    }
-
-    guardarEnBaseDatos($datos, $usuario);
-}
-
-// Función para procesar un archivo XML
-function procesarXML($contenido, $usuario) {
-    global $conn;
-    $xml = simplexml_load_string($contenido);
-    if ($xml === false) {
-        http_response_code(400);
-        echo json_encode(array("response" => 400, "texto" => "XML no válido"));
-        exit;
-    }
-
-    $datos = json_decode(json_encode($xml), true);
-    guardarEnBaseDatos($datos, $usuario);
-}
-
-// Función para guardar los datos en la base de datos
-function guardarEnBaseDatos($datos, $usuario) {
-    global $conn;
-    $usuario_id = "";
-    $sqlUsuario = "SELECT id FROM usuarios WHERE usuario = ?";
-    $stmt = $conn->prepare($sqlUsuario);
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $stmt->bind_result($usuario_id);
-    $stmt->fetch();
-    $stmt->close();
-
-    if (!$usuario_id) {
-        http_response_code(404);
-        echo json_encode(array("response" => 404, "texto" => "Usuario no encontrado"));
-        exit;
-    }
-
-    $sql = "INSERT INTO curriculums (usuario_id, nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, fecha_curriculum, formacion_academica, experiencia_laboral, idiomas, habilidades, datos_interes) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    $stmt = $conn->prepare($sql);
-    $fecha = date("Y-m-d");
-    $formacion = json_encode($datos["formacion_academica"]);
-    $experiencia_laboral = json_encode($datos["experiencia_laboral"]);
-    $idiomas = json_encode($datos["idiomas"]);
-    $habilidades = json_encode($datos["habilidades"]);
-    $datos_interes = json_encode($datos["datos_interes"]);
-    $stmt->bind_param(
-        "issssssssssss",
-        $usuario_id,
-        $datos["nombre"],
-        $datos["apellidos"],
-        $datos["fecha_nacimiento"],
-        $datos["direccion"],
-        $datos["correo_electronico"],
-        $datos["telefono"],
-        $fecha,
-        $formacion,
-        $experiencia_laboral,
-        $idiomas,
-        $habilidades,
-        $datos_interes
-    );
-
-    if ($stmt->execute()) {
-        http_response_code(200); // OK
-        echo json_encode(array("response" => 200, "texto" => "CV guardado correctamente"));
-    } else {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al guardar en la base de datos: " . $stmt->error));
-        exit;
-    }
-
-    $stmt->close();
-}
 
 $conn->close();
 ?>
