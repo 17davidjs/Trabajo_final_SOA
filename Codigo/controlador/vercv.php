@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../modelo/db.php';
+require_once '../config/db.php';
 
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION["usuario"]) || !isset($_SESSION["token"])) {

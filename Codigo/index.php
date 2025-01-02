@@ -15,7 +15,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Gestión de Usuarios</h5>
                     <p class="card-text">Administre usuarios del sistema: creación, eliminación y autenticación.</p>
-                    <a href="usuarios.php" class="btn btn-primary">Ir a Usuarios</a>
+                    <a href="vista/usuarios/index.php" class="btn btn-primary">Ir a Usuarios</a>
                 </div>
             </div>
         </div>

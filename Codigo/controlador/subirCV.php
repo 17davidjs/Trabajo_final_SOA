@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../modelo/db.php';
+require_once '../config/db.php';
 
 if(isset($_SESSION["usuario"]) && isset($_SESSION["token"]) ){
     if ($_SERVER["REQUEST_METHOD"] == "POST") {

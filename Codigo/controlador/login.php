@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../modelo/db.php';
+require_once '../config/db.php';
 
 // Verificar si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
