@@ -193,7 +193,7 @@ CREATE TABLE `usuarios` (
   `correo_electronico` varchar(100) NOT NULL,
   `telefono` varchar(15) DEFAULT NULL,
   `usuario` varchar(50) NOT NULL,
-  `contrasena` varchar(255) NOT NULL,
+  `contraseña` varchar(255) NOT NULL,
   `token` varchar(32) DEFAULT NULL,
   `role` enum('user','admin') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -202,7 +202,7 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `fecha_nacimiento`, `direccion`, `correo_electronico`, `telefono`, `usuario`, `contrasena`, `token`, `role`) VALUES
+INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `fecha_nacimiento`, `direccion`, `correo_electronico`, `telefono`, `usuario`, `contraseña`, `token`, `role`) VALUES
 (0, 'admin', 'admin', '2024-12-10', 'admin', 'admin@gmail.com', '123123123', 'admin', '$2y$10$XmkRm7/JKcDNHHkYz2yhG.Ja/l19i1bPIKUPwv8wrCh5IC4GTfy9.', 'd50bbc79c1e858db21745fe3cefacfa7', 'admin');
 
 --

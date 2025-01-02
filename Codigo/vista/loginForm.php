@@ -9,8 +9,8 @@
             <input type="text" name="usuario" id="usuario" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="contrasena" class="form-label">Contraseña:</label>
-            <input type="password" name="contrasena" id="contrasena" class="form-control" required>
+            <label for="contraseña" class="form-label">Contraseña:</label>
+            <input type="password" name="contraseña" id="contraseña" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
         <a href="/Trabajo_final_SOA/Codigo/vista/registroForm.php" class="btn btn-secondary">Registrarse</a>
