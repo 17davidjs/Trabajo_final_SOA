@@ -13,10 +13,10 @@ require_once '../config/db.php';
         $correo_electronico = filter_var($_POST["correo_electronico"], FILTER_SANITIZE_EMAIL);
         $telefono = htmlspecialchars(trim($_POST["telefono"]));
         $usuario = htmlspecialchars(trim($_POST["usuario"]));
-        $contraseña = $_POST["contraseña"];
-        $contraseña2 = $_POST["contraseña2"];
+        $contrasena = $_POST["contrasena"];
+        $contrasena2 = $_POST["contrasena2"];
 
-        if ($contraseña !== $contraseña2)
+        if ($contrasena !== $contrasena2)
         {
             echo "Error: Las contraseñas no coinciden.";
             exit;
@@ -39,7 +39,7 @@ require_once '../config/db.php';
             "correo_electronico" => $correo_electronico,
             "telefono" => $telefono,
             "usuario" => $usuario,
-            "contraseña" => $contraseña,
+            "contrasena" => $contrasena,
             "role" => "user",
         );
 

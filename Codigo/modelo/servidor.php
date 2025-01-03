@@ -87,8 +87,8 @@ switch ($datos["funcion"]) {
     case "deleteCurriculum":
         deleteCurriculum($datos);
         break;
-    case "cambiarContraseña":
-        cambiarContraseña($datos);
+    case "cambiarcontrasena":
+        cambiarcontrasena($datos);
         break;
     default:
         http_response_code(400);
@@ -178,7 +178,7 @@ function registro($datos) {
         exit;
     }
 
-    $required_fields = ["nombre", "apellidos", "fecha_nacimiento", "direccion", "correo_electronico", "telefono", "usuario", "contraseña"];
+    $required_fields = ["nombre", "apellidos", "fecha_nacimiento", "direccion", "correo_electronico", "telefono", "usuario", "contrasena"];
     foreach ($required_fields as $field) {
         if (!isset($datos[$field])) {
             http_response_code(400);
@@ -187,7 +187,7 @@ function registro($datos) {
         }
     }
 
-    if (strlen($datos["contraseña"]) < 8) {
+    if (strlen($datos["contrasena"]) < 8) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "La contraseña debe tener al menos 8 caracteres"));
         exit;
@@ -199,9 +199,9 @@ function registro($datos) {
         exit;
     }
 
-    $contraseña_hash = password_hash($datos["contraseña"], PASSWORD_DEFAULT);
+    $contrasena_hash = password_hash($datos["contrasena"], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contraseña, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contrasena, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -211,7 +211,7 @@ function registro($datos) {
     }
 
     $stmt->bind_param("sssssssss", $datos["nombre"], $datos["apellidos"], $datos["fecha_nacimiento"], $datos["direccion"], 
-                        $datos["correo_electronico"], $datos["telefono"], $datos["usuario"], $contraseña_hash, $datos["role"]);
+                        $datos["correo_electronico"], $datos["telefono"], $datos["usuario"], $contrasena_hash, $datos["role"]);
 
     if ($stmt->execute()) {
         http_response_code(200);
@@ -226,16 +226,16 @@ function registro($datos) {
 
 function login($datos) {
     global $conn;
-    if (!isset($datos["usuario"]) || !isset($datos["contraseña"])) {
+    if (!isset($datos["usuario"]) || !isset($datos["contrasena"])) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "Datos no válidos"));
         exit;
     }
 
     $usuario = $datos["usuario"];
-    $contraseña = $datos["contraseña"];
+    $contrasena = $datos["contrasena"];
 
-    $sql = "SELECT usuario, contraseña, role FROM usuarios WHERE usuario = ?";
+    $sql = "SELECT usuario, contrasena, role FROM usuarios WHERE usuario = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -254,13 +254,13 @@ function login($datos) {
         exit;
     }
 
-    $contraseña_hash = '';
+    $contrasena_hash = '';
     $role = '';
-    $stmt->bind_result($usuario, $contraseña_hash, $role);
+    $stmt->bind_result($usuario, $contrasena_hash, $role);
     $stmt->fetch();
     $stmt->close();
 
-    if (!password_verify($contraseña, $contraseña_hash)) {
+    if (!password_verify($contrasena, $contrasena_hash)) {
         http_response_code(401);
         echo json_encode(array("response" => 401, "texto" => "Usuario o contraseña incorrectos."));
         exit;
@@ -277,11 +277,11 @@ function login($datos) {
 /****************************************************************************************************/
 // Función para cambiar contraseña de un usuario autenticado
 /****************************************************************************************************/
-function cambiarContraseña($datos) {
+function cambiarcontrasena($datos) {
     global $conn;
 
     // Validar que los datos requeridos estén presentes
-    if (!isset($datos["usuario"]) || !isset($datos["token"]) || !isset($datos["contraseña-actual"]) || !isset($datos["nueva-contraseña"])) {
+    if (!isset($datos["usuario"]) || !isset($datos["token"]) || !isset($datos["contrasena-actual"]) || !isset($datos["nueva-contrasena"])) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "Datos no válidos para cambiar la contraseña"));
         exit;
@@ -289,11 +289,11 @@ function cambiarContraseña($datos) {
 
     $usuario = $datos["usuario"];
     $token = $datos["token"];
-    $contraseña_actual = $datos["contraseña-actual"];
-    $nueva_contraseña = $datos["nueva-contraseña"];
+    $contrasena_actual = $datos["contrasena-actual"];
+    $nueva_contrasena = $datos["nueva-contrasena"];
 
     // Consultar la contraseña actual en la base de datos
-    $sql = "SELECT contraseña FROM usuarios WHERE usuario = ?";
+    $sql = "SELECT contrasena FROM usuarios WHERE usuario = ?";
     $stmt = $conn->prepare($sql);
     if ($stmt === false) {
         http_response_code(500);
@@ -314,7 +314,7 @@ function cambiarContraseña($datos) {
     $row = $result->fetch_assoc();
 
     // Verificar que la contraseña actual sea correcta
-    if (!password_verify($contraseña_actual, $row['contraseña'])) {
+    if (!password_verify($contrasena_actual, $row['contrasena'])) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "La contraseña actual no coincide"));
         exit;
@@ -329,7 +329,7 @@ function cambiarContraseña($datos) {
     }
 
     // Validar que la nueva contraseña tenga al menos 8 caracteres
-    if (strlen($nueva_contraseña) < 8) {
+    if (strlen($nueva_contrasena) < 8) {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "La nueva contraseña debe tener al menos 8 caracteres"));
         exit;
@@ -337,10 +337,10 @@ function cambiarContraseña($datos) {
 
     
     // Generar el hash de la nueva contraseña
-    $contraseña_hash = password_hash($nueva_contraseña, PASSWORD_DEFAULT);
+    $contrasena_hash = password_hash($nueva_contrasena, PASSWORD_DEFAULT);
 
     // Actualizar la contraseña en la base de datos
-    $sql = "UPDATE usuarios SET contraseña = ? WHERE usuario = ?";
+    $sql = "UPDATE usuarios SET contrasena = ? WHERE usuario = ?";
     $stmt = $conn->prepare($sql);
     if ($stmt === false) {
         http_response_code(500);
@@ -348,7 +348,7 @@ function cambiarContraseña($datos) {
         exit;
     }
 
-    $stmt->bind_param("ss", $contraseña_hash, $usuario);
+    $stmt->bind_param("ss", $contrasena_hash, $usuario);
 
     if ($stmt->execute()) {
         http_response_code(200);

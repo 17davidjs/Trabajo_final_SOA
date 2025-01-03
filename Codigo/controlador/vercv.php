@@ -3,7 +3,8 @@ session_start();
 require_once '../config/db.php';
 
 // Verificar si el usuario está autenticado
-if (!isset($_SESSION["usuario"]) || !isset($_SESSION["token"])) {
+if (!isset($_SESSION["usuario"]) || !isset($_SESSION["token"]))
+{
     echo "Debe iniciar sesión para ver los currículums<br>";
     echo "<a href='../vista/loginForm.php'>Iniciar sesión</a>";
     exit;

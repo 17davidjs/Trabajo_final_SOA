@@ -6,13 +6,13 @@ require_once '../config/db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger los datos del formulario
     $usuario = $_POST["usuario"];
-    $contraseña = $_POST["contraseña"];
+    $contrasena = $_POST["contrasena"];
 
     // Preparamos los datos en formato array
     $data = array(
         "funcion" => "login",
         "usuario" => $usuario,
-        "contraseña" => $contraseña,
+        "contrasena" => $contrasena,
     );
 
     // Enviamos los datos al servidor.php usando cURL

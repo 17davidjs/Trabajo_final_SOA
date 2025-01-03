@@ -52,24 +52,24 @@ if (isset($_SESSION["usuario"]) && isset($_SESSION["token"]) && isset($_POST["el
 
 
 
-if (isset($_SESSION["usuario"]) && isset($_SESSION["token"]) && isset($_POST['cambio-contraseña'])) {
+if (isset($_SESSION["usuario"]) && isset($_SESSION["token"]) && isset($_POST['cambio-contrasena'])) {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        $contraseña = $_POST["contrasena-actual"];
-        $contraseña1 = $_POST["nueva-contrasena"];
-        $contraseña2 = $_POST["confirmar-contrasena"];
+        $contrasena = $_POST["contrasena-actual"];
+        $contrasena1 = $_POST["nueva-contrasena"];
+        $contrasena2 = $_POST["confirmar-contrasena"];
 
-        if ($contraseña1 !== $contraseña2) {
+        if ($contrasena1 !== $contrasena2) {
             echo "Error: Las contraseñas no coinciden.";
             exit;
         }
 
         $data = array(
-            "funcion" => "cambiarContraseña",
+            "funcion" => "cambiarcontrasena",
             "usuario" => $_SESSION["usuario"],
             "token" => $_SESSION["token"],
-            "contraseña-actual" => $contraseña,
-            "nueva-contraseña" => $contraseña1,
+            "contrasena-actual" => $contrasena,
+            "nueva-contrasena" => $contrasena1,
         );
 
         // Enviar los datos al servidor.php usando cURL

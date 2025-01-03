@@ -63,7 +63,7 @@ $usuario = isset($_SESSION['usuario']['usuario']) ? $_SESSION['usuario']['usuari
             <label for="confirmar-contrasena">Confirmar Nueva Contraseña:</label>
             <input type="password" name="confirmar-contrasena" class="form-control mb-3" placeholder="Confirma tu nueva contraseña">
             
-            <button class="btn btn-primary" type="submit" name="cambio-contraseña">Cambiar Contraseña</button>
+            <button class="btn btn-primary" type="submit" name="cambio-contrasena">Cambiar Contraseña</button>
         </form>
 
         <br><hr><br>
