@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '../config/db.php';
+require_once __DIR__ . 'Codigo\config\db.php';
 
 class userModel
 {
@@ -15,12 +15,20 @@ class userModel
         $sql = "SELECT * FROM usuarios";
         $result = $this->conn->query($sql);
 
-        if ($result->num_rows > 0)
+        // Depuración
+        echo '<pre>';
+        var_dump($result);
+        echo '</pre>';
+
+        if (!$result)
         {
-            return $result->fetch_all(MYSQLI_ASSOC); // Devuelve todos los usuarios como un array asociativo
+            die("Error en la consulta: " . $this->conn->error);
         }
 
-        return [];
+        if ($result->num_rows > 0)
+        {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
     }
 
     public function getUserById($id)

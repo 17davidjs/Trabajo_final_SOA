@@ -1,27 +1,33 @@
 <?php
-require_once __DIR__ . '../models/UserModel.php';
+require_once __DIR__ . 'Codigo/modelo/userModel.php';
 
-class UserController
+class userController
 {
     private $userModel;
 
     public function __construct($connection)
     {
-        $this->userModel = new UserModel($connection);
+        $this->userModel = new userModel($connection);
     }
 
     public function index()
     {
         $users = $this->userModel->getAllUsers();
 
-         // Asegúrate de que `$users` no sea null antes de cargar la vista
-        if ($users === null)
+        // Asegúrate de que `$users` no sea null antes de cargar la vista
+        if (empty($users))
         {
             $users = []; // Define `$users` como un array vacío si no hay datos
         }
 
-        require_once __DIR__ . '../vista/usuarios/index.php';
+        // Depuración
+        echo '<pre>';
+        var_dump($users);
+        echo '</pre>';
+
+        require_once __DIR__ . 'Codigo/vista/usuarios/index_usuarios.php';
     }
+
 
     public function create()
     {
@@ -39,11 +45,11 @@ class UserController
                 'role' => $_POST['role']
             ];
             $this->userModel->createUser($data);
-            header('Location: /');
+            header('Location: Codigo/vista/usuarios/index_usuarios.php');
         }
         else
         {
-            require_once __DIR__ . '../vistas/usuarios/create.php';
+            require_once __DIR__ . 'Codigo/vista/usuarios/create.php';
         }
     }
 
@@ -63,19 +69,19 @@ class UserController
                 'role' => $_POST['role']
             ];
             $this->userModel->updateUser($id, $data);
-            header('Location: /');
+            header('Location: Codigo/vista/usuarios/index_usuarios.php');
         }
         else
         {
             $user = $this->userModel->getUserById($id);
-            require_once __DIR__ . '../vistas/usuarios/edit.php';
+            require_once __DIR__ . 'Codigo/vista/usuarios/edit.php';
         }
     }
 
     public function delete($id)
     {
         $this->userModel->deleteUser($id);
-        header('Location: /');
+        header('Location: Codigo/vista/usuarios/index_usuarios.php');
     }
 }
 ?>

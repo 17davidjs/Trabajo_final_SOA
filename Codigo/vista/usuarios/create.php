@@ -4,7 +4,7 @@
     <h1>Crear Usuario</h1>
     <form method="POST" action="">
         <div class="mb-3">
-            <label>Nombre:</label>
+            <label class="form-label">Nombre:</label>
             <input type="text" class="form-control" name="nombre" required>
         </div>
         <div class="mb-3">
@@ -36,7 +36,7 @@
             <input type="password" class="form-control" name="contrasena" required>
         </div>
         <div class="mb-3">
-            <label class="form-label">Role:</label>
+            <label class="form-label">Rol:</label>
             <input type="text" class="form-control" name="role" required>
         </div>
         <button type="submit" class="btn btn-primary">Crear</button>
