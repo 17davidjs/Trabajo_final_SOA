@@ -40,7 +40,7 @@ require_once '../config/db.php';
             "telefono" => $telefono,
             "usuario" => $usuario,
             "contraseña" => $contraseña,
-            "role" => "usuario",
+            "role" => "user",
         );
 
          // Mostrar el array por pantalla
@@ -67,6 +67,11 @@ require_once '../config/db.php';
             {
                 // Si la respuesta es JSON válida
                 echo "Respuesta del servidor: " . print_r($decodedResponse, true);
+                echo "<script>
+                        setTimeout(function() {
+                            window.location.href = '../index.php';
+                        }, 5000); // Redirige después de 5 segundos
+                    </script>";
             }
             else
             {

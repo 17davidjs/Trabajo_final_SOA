@@ -98,7 +98,7 @@ if($nombreArchivo == 'index.php') {
                                 <?php echo htmlspecialchars($usuario_nombre); ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="/Trabajo_final_SOA/Codigo/vista/configuracion.php">Configuración</a></li>
+                                <li><a class="dropdown-item" href="/Trabajo_final_SOA/Codigo/vista/configuracionForm.php">Configuración</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="/Trabajo_final_SOA/Codigo/vista/logout.php">Cerrar sesión</a></li>
                             </ul>

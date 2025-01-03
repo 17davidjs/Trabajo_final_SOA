@@ -24,7 +24,7 @@ $usuario = isset($_SESSION['usuario']['usuario']) ? $_SESSION['usuario']['usuari
     <main class="container my-5">
         <h3>Mi perfil:</h3>
         <br>
-        <form class="perfil-formulario" method="post" action="../controlador/actualizarPerfil.php">
+        <form class="perfil-formulario" method="post" action="../controlador/configuracion.php">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" class="form-control mb-3" value="<?php echo htmlspecialchars($nombre); ?>" required>
 
@@ -53,7 +53,7 @@ $usuario = isset($_SESSION['usuario']['usuario']) ? $_SESSION['usuario']['usuari
         <br><hr><br>
 
         <h4>Cambiar Contraseña:</h4>
-        <form method="post">
+        <form method="post" action="../controlador/configuracion.php">
             <label for="contrasena-actual">Contraseña Actual:</label>
             <input type="password" name="contrasena-actual" class="form-control mb-3" placeholder="Introduce tu contraseña actual">
             
@@ -63,15 +63,14 @@ $usuario = isset($_SESSION['usuario']['usuario']) ? $_SESSION['usuario']['usuari
             <label for="confirmar-contrasena">Confirmar Nueva Contraseña:</label>
             <input type="password" name="confirmar-contrasena" class="form-control mb-3" placeholder="Confirma tu nueva contraseña">
             
-            <button class="btn btn-primary" type="submit">Cambiar Contraseña</button>
+            <button class="btn btn-primary" type="submit" name="cambio-contraseña">Cambiar Contraseña</button>
         </form>
 
         <br><hr><br>
         <h1>Eliminar Cuenta</h1>
         <p>¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.</p>
-        <form id="eliminarCuentaForm" action="../controlador/eliminarUser.php" method="POST" onsubmit="return confirmarEliminacion();">
-            <button type="submit" class="btn btn-danger">Eliminar Cuenta</button>
-            <a href="../../index.php" class="btn btn-secondary">Cancelar</a>
+        <form id="eliminarCuentaForm" action="../controlador/configuracion.php" method="POST" onsubmit="return confirmarEliminacion();">
+            <button type="submit" class="btn btn-danger" name="eliminarUser">Eliminar Cuenta</button>
         </form>
 
 
