@@ -20,32 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `soa_final`
 --
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `curriculums`
---
-
-CREATE TABLE `curriculums` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellidos` varchar(100) NOT NULL,
-  `fecha_nacimiento` date NOT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `correo_electronico` varchar(100) NOT NULL,
-  `telefono` varchar(15) DEFAULT NULL,
-  `fecha_curriculum` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
-
-
--- --------------------------------------------------------
-
 --
 -- Estructura de tabla para la tabla `cv`
 --
@@ -234,26 +208,12 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `fecha_nacimiento`, `direcc
 --
 
 --
--- Indices de la tabla `curriculums`
---
-ALTER TABLE `cv`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`);
-
---
--- Indices de la tabla `curriculu\`
---
-ALTER TABLE `cv`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`);
-
---
 -- Indices de la tabla `cv`
 --
 ALTER TABLE `cv`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
---
 -- Indices de la tabla `cv_experiencias`
 --
 ALTER TABLE `cv_experiencias`
@@ -341,17 +301,7 @@ ALTER TABLE `usuarios`
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
---
 
---
--- AUTO_INCREMENT de la tabla `curriculums`
---
-ALTER TABLE `cv`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
-
---
 -- AUTO_INCREMENT de la tabla `cv`
 --
 ALTER TABLE `cv`
@@ -404,7 +354,7 @@ ALTER TABLE `usuarios`
 --
 
 --
--- Filtros para la tabla `curriculums`
+-- Filtros para la tabla `cv`
 --
 ALTER TABLE `cv`
   ADD CONSTRAINT `curriculums_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -413,35 +363,35 @@ ALTER TABLE `cv`
 -- Filtros para la tabla `cv_experiencias`
 --
 ALTER TABLE `cv_experiencias`
-  ADD CONSTRAINT `cv_experiencias_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `curriculums` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cv_experiencias_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `cv` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `cv_experiencias_ibfk_2` FOREIGN KEY (`id_experiencia`) REFERENCES `experiencias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `cv_formacion`
 --
 ALTER TABLE `cv_formacion`
-  ADD CONSTRAINT `cv_formacion_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `curriculums` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cv_formacion_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `cv` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `cv_formacion_ibfk_2` FOREIGN KEY (`id_formacion`) REFERENCES `formacion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `cv_habilidades`
 --
 ALTER TABLE `cv_habilidades`
-  ADD CONSTRAINT `cv_habilidades_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `curriculums` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cv_habilidades_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `cv` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `cv_habilidades_ibfk_2` FOREIGN KEY (`id_habilidad`) REFERENCES `habilidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `cv_idiomas`
 --
 ALTER TABLE `cv_idiomas`
-  ADD CONSTRAINT `cv_idiomas_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `curriculums` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cv_idiomas_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `cv` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `cv_idiomas_ibfk_2` FOREIGN KEY (`id_idioma`) REFERENCES `idiomas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `cv_intereses`
 --
 ALTER TABLE `cv_intereses`
-  ADD CONSTRAINT `cv_intereses_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `curriculums` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cv_intereses_ibfk_1` FOREIGN KEY (`id_curriculum`) REFERENCES `cv` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `cv_intereses_ibfk_2` FOREIGN KEY (`id_interes`) REFERENCES `intereses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
