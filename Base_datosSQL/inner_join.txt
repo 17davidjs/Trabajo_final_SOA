@@ -1,0 +1,40 @@
+SELECT 
+    cv.id AS cv_id,
+    cv.nombre AS nombre_cv,
+    cv.apellidos AS apellidos_cv,
+    cv.fecha_nacimiento,
+    cv.telefonos,
+    cv.correos,
+    cv.paginas_web,
+    cv.imagen_path,
+    experiencias.puesto,
+    experiencias.empresa,
+    experiencias.fecha_inicio AS experiencia_fecha_inicio,
+    experiencias.fecha_fin AS experiencia_fecha_fin,
+    formacion.titulo,
+    formacion.centro,
+    formacion.fecha_inicio AS formacion_fecha_inicio,
+    formacion.fecha_fin AS formacion_fecha_fin,
+    habilidades.habilidad,
+    idiomas.idioma,
+    idiomas.nivel,
+    intereses.interes
+FROM 
+    cv
+-- Relación con experiencias laborales
+LEFT JOIN cv_experiencias ON cv.id = cv_experiencias.id_curriculum
+LEFT JOIN experiencias ON cv_experiencias.id_experiencia = experiencias.id
+-- Relación con formación académica
+LEFT JOIN cv_formacion ON cv.id = cv_formacion.id_curriculum
+LEFT JOIN formacion ON cv_formacion.id_formacion = formacion.id
+-- Relación con habilidades
+LEFT JOIN cv_habilidades ON cv.id = cv_habilidades.id_curriculum
+LEFT JOIN habilidades ON cv_habilidades.id_habilidad = habilidades.id
+-- Relación con idiomas
+LEFT JOIN cv_idiomas ON cv.id = cv_idiomas.id_curriculum
+LEFT JOIN idiomas ON cv_idiomas.id_idioma = idiomas.id
+-- Relación con intereses
+LEFT JOIN cv_intereses ON cv.id = cv_intereses.id_curriculum
+LEFT JOIN intereses ON cv_intereses.id_interes = intereses.id
+WHERE 
+    cv.id = 1; -- Cambia este valor al ID del currículum que deseas consultar
