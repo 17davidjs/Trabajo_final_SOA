@@ -42,20 +42,7 @@ CREATE TABLE `curriculums` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `curriculu\`
---
 
-CREATE TABLE `curriculu\` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellidos` varchar(100) NOT NULL,
-  `fecha_nacimiento` date NOT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `correo_electronico` varchar(100) NOT NULL,
-  `telefono` varchar(15) DEFAULT NULL,
-  `fecha_curriculum` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -249,14 +236,14 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `fecha_nacimiento`, `direcc
 --
 -- Indices de la tabla `curriculums`
 --
-ALTER TABLE `curriculums`
+ALTER TABLE `cv`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Indices de la tabla `curriculu\`
 --
-ALTER TABLE `curriculu\`
+ALTER TABLE `cv`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
@@ -359,14 +346,10 @@ ALTER TABLE `usuarios`
 --
 -- AUTO_INCREMENT de la tabla `curriculums`
 --
-ALTER TABLE `curriculums`
+ALTER TABLE `cv`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `curriculu\`
---
-ALTER TABLE `curriculu\`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cv`
@@ -423,7 +406,7 @@ ALTER TABLE `usuarios`
 --
 -- Filtros para la tabla `curriculums`
 --
-ALTER TABLE `curriculums`
+ALTER TABLE `cv`
   ADD CONSTRAINT `curriculums_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
