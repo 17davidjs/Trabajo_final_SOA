@@ -435,6 +435,413 @@ function eliminarUser($datos) {
 
 /// Funciones para subir currículums
 
+function subir($datos) {
+    global $conn;
+    if (!isset($datos["nombreArchivo"]) || !isset($datos["tipoArchivo"]) || !isset($datos["fichero"]) || !isset($datos["token"]) || !isset($datos["usuario"])) {
+        http_response_code(400);
+        echo json_encode(array("response" => 400, "texto" => "Datos no válidos para subir el fichero"));
+        exit;
+    }
+
+    $nombreArchivo = $datos["nombreArchivo"];
+    $tipoArchivo = $datos["tipoArchivo"];
+    $contenidoArchivo = base64_decode($datos["fichero"]);
+    $token = $datos["token"];
+    $usuario = $datos["usuario"];
+
+    $usuarioValidado = verificarToken($token);
+
+    if ($usuarioValidado !== $usuario) {
+        http_response_code(401);
+        echo json_encode(array("response" => 401, "texto" => "Token no válido o no coincide con el usuario"));
+        exit;
+    }
+
+    $rutaTemporal = sys_get_temp_dir() . "/" . uniqid() . "_" . $nombreArchivo;
+    file_put_contents($rutaTemporal, $contenidoArchivo);
+
+    $contenido = file_get_contents($rutaTemporal);
+    if ($contenido === false) {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error al leer el contenido del archivo"));
+        unlink($rutaTemporal);
+        exit;
+    }
+
+    switch ($tipoArchivo) {
+        case "text/csv":
+            procesarCSV($contenido, $usuarioValidado);
+            break;
+        case "application/json":
+            procesarJSON($contenido, $usuarioValidado);
+            break;
+        case "application/xml":
+        case "text/xml":
+            procesarXML($contenido, $usuarioValidado);
+            break;
+        default:
+            http_response_code(400);
+            echo json_encode(array("response" => 400, "texto" => "Tipo de archivo no soportado"));
+            unlink($rutaTemporal);
+            exit;
+    }
+
+    unlink($rutaTemporal);
+
+    http_response_code(200);
+    echo json_encode(array("response" => 200, "texto" => "Currículum procesado y almacenado correctamente"));
+}
+
+function procesarCSV($datos,$usuario) {
+    global $conn;
+
+    $usuario_id = "";
+    $sqlUsuario = "SELECT id FROM usuarios WHERE usuario = ?";
+    $stmt = $conn->prepare($sqlUsuario);
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $stmt->bind_result($usuario_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!$usuario_id) {
+        http_response_code(404);
+        echo json_encode(array("response" => 404, "texto" => "Usuario no encontrado"));
+        exit;
+    }
+
+
+    // Parsear el contenido CSV
+    $lineas = explode("\n", $datos);
+    $headers = str_getcsv(array_shift($lineas));
+    $data = str_getcsv(array_shift($lineas));
+
+    // Asignar los datos a variables
+    $nombre = $data[array_search('nombre', $headers)];
+    $apellidos = $data[array_search('apellidos', $headers)];
+    $fecha_nacimiento = $data[array_search('fecha_nacimiento', $headers)];
+    $telefono = $data[array_search('telefonos', $headers)];
+    $correo_electronico = $data[array_search('correos', $headers)];
+    $web = $data[array_search('paginas_web', $headers)];
+    $imagen = $data[array_search('imagen_path', $headers)];
+    $formacion_academica = json_decode($data[array_search('formacion_academica', $headers)], true);
+    $experiencia_laboral = json_decode($data[array_search('experiencia_laboral', $headers)], true);
+    $idiomas = json_decode($data[array_search('idiomas', $headers)], true);
+    $habilidades = json_decode($data[array_search('habilidades', $headers)], true);
+    $datos_interes = json_decode($data[array_search('datos_interes', $headers)], true);
+
+    // Insertar en la tabla `curriculums`
+    $sql = "INSERT INTO cv (usuario_id, nombre, apellidos, fecha_nacimiento, telefonos, correos, paginas_web, imagen_path) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssssss", $usuario_id, $nombre, $apellidos, $fecha_nacimiento, $telefono, $correo_electronico, $web, $imagen); 
+
+    if (!$stmt->execute()) {
+        echo json_encode(["response" => 500, "texto" => "Error al insertar currículum: " . $stmt->error]);
+        return;
+    }
+
+    $curriculumID = $conn->insert_id; // Obtener el ID del currículum recién insertado
+    $stmt->close();
+
+    // Insertar en `formacion_academica`
+    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_inicio, fecha_fin) 
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($formacion_academica as $formacion) {
+        $stmt->bind_param(
+            "issss",
+            $curriculumID,
+            $formacion['titulo'],
+            $formacion['institucion'],
+            $formacion['fecha_inicio'],
+            $formacion['fecha_fin']
+        );
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `experiencia_laboral`
+    $sql = "INSERT INTO experiencia_laboral (curriculum_id, puesto, empresa, fecha_inicio, fecha_fin, responsabilidades) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($experiencia_laboral as $experiencia) {
+        $responsabilidades = json_encode($experiencia['responsabilidades']);
+        $stmt->bind_param(
+            "issss",
+            $curriculumID,
+            $experiencia['puesto'],
+            $experiencia['empresa'],
+            $experiencia['fecha_inicio'],
+            $experiencia['fecha_fin'],
+            $responsabilidades
+        );
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `idiomas`
+    $sql = "INSERT INTO idiomas (curriculum_id, idioma, nivel) 
+            VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($idiomas as $idioma) {
+        $stmt->bind_param("iss", $curriculumID, $idioma['idioma'], $idioma['nivel']);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `habilidades`
+    $sql = "INSERT INTO habilidades (curriculum_id, habilidad) 
+            VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($habilidades as $habilidad) {
+        $stmt->bind_param("is", $curriculumID, $habilidad);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `datos_interes`
+    $sql = "INSERT INTO datos_interes (curriculum_id, dato_interes) 
+            VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($datos_interes as $dato) {
+        $stmt->bind_param("is", $curriculumID, $dato);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    echo json_encode(["response" => 200, "texto" => "Currículum procesado y guardado correctamente."]);
+}
+
+function procesarJSON($datos,$usuario) {
+    global $conn;
+
+    $usuario_id = "";
+    $sqlUsuario = "SELECT id FROM usuarios WHERE usuario = ?";
+    $stmt = $conn->prepare($sqlUsuario);
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $stmt->bind_result($usuario_id);
+    $stmt->fetch();
+    $stmt->close();
+    // Decodificar el JSON
+    $data = json_decode($$datos, true);
+
+    // Asignar los datos a variables
+    $nombre = $data['nombre'];
+    $apellidos = $data['apellidos'];
+    $fecha_nacimiento = $data['fecha_nacimiento'];
+    $telefono = $data['telefonos'];
+    $correo_electronico = $data['correos'];
+    $web = $data['paginas_web'];
+    $imagen = $data['imagen_path'];
+    $formacion_academica = $data['formacion_academica'];
+    $experiencia_laboral = $data['experiencia_laboral'];
+    $idiomas = $data['idiomas'];
+    $habilidades = $data['habilidades'];
+    $datos_interes = $data['datos_interes'];
+
+     // Insertar en la tabla `curriculums`
+     $sql = "INSERT INTO cv (usuario_id, nombre, apellidos, fecha_nacimiento, telefonos, correos, paginas_web, imagen_path) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("isssssss", $usuario_id, $nombre, $apellidos, $fecha_nacimiento, $telefono, $correo_electronico, $web, $imagen); 
+    if (!$stmt->execute()) {
+        echo json_encode(["response" => 500, "texto" => "Error al insertar currículum: " . $stmt->error]);
+        return;
+    }
+
+    $curriculumID = $conn->insert_id; // Obtener el ID del currículum recién insertado
+    $stmt->close();
+
+    // Insertar en `formacion_academica`
+    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_inicio, fecha_fin) 
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($formacion_academica as $formacion) {
+        $stmt->bind_param(
+            "issss",
+            $curriculumID,
+            $formacion['titulo'],
+            $formacion['institucion'],
+            $formacion['fecha_inicio'],
+            $formacion['fecha_fin']
+        );
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `experiencia_laboral`
+    $sql = "INSERT INTO experiencia_laboral (curriculum_id, puesto, empresa, fecha_inicio, fecha_fin, responsabilidades) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($experiencia_laboral as $experiencia) {
+        $responsabilidades = json_encode($experiencia['responsabilidades']);
+        $stmt->bind_param(
+            "issss",
+            $curriculumID,
+            $experiencia['puesto'],
+            $experiencia['empresa'],
+            $experiencia['fecha_inicio'],
+            $experiencia['fecha_fin'],
+            $responsabilidades
+        );
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `idiomas`
+    $sql = "INSERT INTO idiomas (curriculum_id, idioma, nivel) 
+            VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($idiomas as $idioma) {
+        $stmt->bind_param("iss", $curriculumID, $idioma['idioma'], $idioma['nivel']);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `habilidades`
+    $sql = "INSERT INTO habilidades (curriculum_id, habilidad) 
+            VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($habilidades as $habilidad) {
+        $stmt->bind_param("is", $curriculumID, $habilidad);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `datos_interes`
+    $sql = "INSERT INTO datos_interes (curriculum_id, dato_interes) 
+            VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($datos_interes as $dato) {
+        $stmt->bind_param("is", $curriculumID, $dato);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    echo json_encode(["response" => 200, "texto" => "Currículum procesado y guardado correctamente."]);
+}
+
+function procesarXML($datos, $usuario) {
+    global $conn;
+
+    $usuario_id = "";
+    $sqlUsuario = "SELECT id FROM usuarios WHERE usuario = ?";
+    $stmt = $conn->prepare($sqlUsuario);
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $stmt->bind_result($usuario_id);
+    $stmt->fetch();
+    $stmt->close();
+    // Cargar el XML y convertirlo en un objeto SimpleXMLElement
+    $xml = simplexml_load_string($datos);
+
+    // Asignar los datos a variables
+    $nombre = (string)$xml->nombre;
+    $apellidos = (string)$xml->apellidos;
+    $fecha_nacimiento = (string)$xml->fecha_nacimiento;
+    $telefono = (string)$xml->telefonos;
+    $correo_electronico = (string)$xml->correos;
+    $web = (string)$xml->paginas_web;
+    $imagen = (string)$xml->imagen_path;
+    $formacion_academica = $xml->formacion_academica->estudio;
+    $experiencia_laboral = $xml->experiencia_laboral->trabajo;
+    $idiomas = $xml->idiomas->idioma;
+    $habilidades = $xml->habilidades->habilidad;
+    $datos_interes = $xml->datos_interes->dato;
+
+   // Insertar en la tabla `curriculums`
+   $sql = "INSERT INTO cv (usuario_id, nombre, apellidos, fecha_nacimiento, telefonos, correos, paginas_web, imagen_path) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssssss", $usuario_id, $nombre, $apellidos, $fecha_nacimiento, $telefono, $correo_electronico, $web, $imagen); 
+
+    if (!$stmt->execute()) {
+        echo json_encode(["response" => 500, "texto" => "Error al insertar currículum: " . $stmt->error]);
+        return;
+    }
+
+    $curriculumID = $conn->insert_id; // Obtener el ID del currículum recién insertado
+    $stmt->close();
+
+    // Insertar en `formacion_academica`
+    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_inicio, fecha_fin) 
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($formacion_academica as $formacion) {
+        $stmt->bind_param(
+            "issss",
+            $curriculumID,
+            (string)$formacion->titulo,
+            (string)$formacion->institucion,
+            (string)$formacion->fecha_inicio,
+            (string)$formacion->fecha_fin
+        );
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `experiencia_laboral`
+    $sql = "INSERT INTO experiencia_laboral (curriculum_id, puesto, empresa, fecha_inicio, fecha_fin, responsabilidades) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($experiencia_laboral as $experiencia) {
+        $responsabilidades = [];
+        foreach ($experiencia->responsabilidades->responsabilidad as $responsabilidad) {
+            $responsabilidades[] = (string)$responsabilidad;
+        }
+        $responsabilidadesJson = json_encode($responsabilidades);
+
+        $stmt->bind_param(
+            "issss",
+            $curriculumID,
+            (string)$experiencia->puesto,
+            (string)$experiencia->empresa,
+            (string)$experiencia->fecha_inicio,
+            (string)$experiencia->fecha_fin,
+            $responsabilidadesJson
+        );
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `idiomas`
+    $sql = "INSERT INTO idiomas (curriculum_id, idioma, nivel) 
+            VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($idiomas as $idioma) {
+        $idioma_nombre = (string)$idioma->nombre;
+        $idioma_nivel = (string)$idioma->nivel;
+        $stmt->bind_param("iss", $curriculumID, $idioma_nombre, $idioma_nivel);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `habilidades`
+    $sql = "INSERT INTO habilidades (curriculum_id, habilidad) 
+            VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($habilidades as $habilidad) {
+        $habilidad_str = (string)$habilidad;
+        $stmt->bind_param("is", $curriculumID, $habilidad_str);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Insertar en `datos_interes`
+    $sql = "INSERT INTO datos_interes (curriculum_id, dato_interes) 
+            VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($datos_interes as $dato) {
+        $dato_interes = (string)$dato;
+        $stmt->bind_param("is", $curriculumID, $dato_interes);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    echo json_encode(["response" => 200, "texto" => "Currículum procesado y guardado correctamente."]);
+}
 
 $conn->close();
 ?>

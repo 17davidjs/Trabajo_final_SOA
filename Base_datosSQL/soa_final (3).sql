@@ -65,26 +65,16 @@ CREATE TABLE `curriculu\` (
 
 CREATE TABLE `cv` (
   `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
   `apellidos` varchar(255) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `acerca_de` text DEFAULT NULL,
   `telefonos` text DEFAULT NULL,
   `correos` text DEFAULT NULL,
   `paginas_web` text DEFAULT NULL,
-  `educacion` text DEFAULT NULL,
-  `experiencia` text DEFAULT NULL,
   `imagen_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `cv`
---
-
-INSERT INTO `cv` (`id`, `nombre`, `apellidos`, `fecha_nacimiento`, `acerca_de`, `telefonos`, `correos`, `paginas_web`, `educacion`, `experiencia`, `imagen_path`) VALUES
-(1, 'María Jesús', 'González', '2001-06-21', 'hola mundo', '[\"606461129\"]', '[\"gsdfgsd@gdfg.gsdf\"]', '[\"\"]', '[[\"ingeniero \",\"usal\",\"2120\"]]', '[[\"ceo\",\"danode\",\"2025-01-16\",\"2025-01-31\",\"me han despedido\"]]', 'uploads/70.jpg'),
-(3, '', '', '0000-00-00', '', '[\"\"]', '[\"\"]', '[\"\"]', '[[\"\",\"\",\"\"]]', '[[\"\",\"\",\"\",\"\",\"\"]]', ''),
-(4, 'María Jesús', 'González', '2025-01-17', 'hdfthdfgh', '[\"606461129\",\"46543636\"]', '[\"gsdfgsd@gdfg.gsdf\",\"fg@g.vom\"]', '[\"cxz\"]', '[[\"ingeniero \",\"usal\",\"2120\"],[\"ewrtw\",\"ewrt\",\"wert\"]]', '[[\"ceo\",\"danode\",\"2025-01-03\",\"2025-01-18\",\"gsdfsgf\"],[\"ceo\",\"danogfgfg\",\"2025-01-21\",\"2025-02-07\",\"dsfgdsfgsdfg\"]]', 'uploads/65.jpg');
 
 -- --------------------------------------------------------
 
