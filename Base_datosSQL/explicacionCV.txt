@@ -1,0 +1,1 @@
+la tabla CV contiene la informacion basica del CV y para obtener el resto de campos como idioma, experiencia etc se debe hacer inner joins usando el propio id del CV con las tablas asociadas cv_* (instruccion inner join en otro txt)
