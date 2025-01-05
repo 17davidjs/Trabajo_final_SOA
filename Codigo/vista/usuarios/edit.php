@@ -1,47 +1,97 @@
-<?php include '../header.php'; ?>
+<?php 
+include '../header.php';
+require_once '../../controlador/userController.php';
 
-<main class="container my-5">
-    <h1>Editar Usuario</h1>
-    <form method="POST" action="">
-        <div class="mb-3">
-            <label class="form-label">Nombre:</label>
-            <input type="text" class="form-control" name="nombre" value="<?= $user['nombre']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Apellidos:</label>
-            <input type="text" class="form-control" name="apellidos" value="<?= $user['apellidos']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Fecha de nacimiento:</label>
-            <input type="date" class="form-control" name="fecha_nacimiento" value="<?= $user['fecha_nacimiento']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Dirección:</label>
-            <input type="text" class="form-control" name="direccion" value="<?= $user['direccion']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Correo electrónico:</label>
-            <input type="email"class="form-control" name="correo_electronico" value="<?= $user['correo_electronico']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Teléfono:</label>
-            <input type="tel"class="form-control" name="telefono" value="<?= $user['telefono']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Usuario:</label>
-            <input type="text"class="form-control" name="usuario" value="<?= $user['usuario']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Contraseña:</label>
-            <input type="password"class="form-control" name="contrasena" value="<?= $user['contrasena']; ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Role:</label>
-            <input type="text"class="form-control" name="role" value="<?= $user['role']; ?>" required>
-        </div>
+$controladorUsuarios = new UserController();
 
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    </form>
-</main>
-</body>
+if ($_SERVER['REQUEST_METHOD'] === 'POST')
+{
+    $controladorUsuarios->edit($_POST);
+}
+else
+{
+    $id = $_GET['id'] ?? null;
+    if (!$id)
+    {
+        header("Location: index_usuarios.php");
+        exit;
+    }
+
+    $usuario = $controladorUsuarios->obtenerUsuario($id);
+
+    if (!$usuario)
+    {
+        header("Location: index_usuarios.php?mensaje=Usuario no encontrado");
+        exit;
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+    <body>
+        <main>
+            <div class="container mt-4">
+                <h2>Editar Usuario</h2>
+                <form method="POST" action="edit.php">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($usuario['id']); ?>">
+                    
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" name="nombre" value="<?php echo htmlspecialchars($usuario['nombre']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apellidos</label>
+                        <input type="text" class="form-control" name="apellidos" value="<?php echo htmlspecialchars($usuario['apellidos']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" name="fecha_nacimiento" value="<?php echo htmlspecialchars($usuario['fecha_nacimiento']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" name="direccion" value="<?php echo htmlspecialchars($usuario['direccion']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" class="form-control" name="correo_electronico" value="<?php echo htmlspecialchars($usuario['correo_electronico']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" class="form-control" name="telefono" value="<?php echo htmlspecialchars($usuario['telefono']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" class="form-control" name="usuario" value="<?php echo htmlspecialchars($usuario['usuario']); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" class="form-control" name="contrasena" placeholder="Deja vacío si no deseas cambiarla">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select class="form-control" name="role" required>
+                            <option value="admin" <?php echo $usuario['role'] === 'admin' ? 'selected' : ''; ?>>
+                                Administrador
+                            </option>
+                            <option value="user" <?php echo $usuario['role'] === 'user' ? 'selected' : ''; ?>>
+                                Usuario
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <a href="index_usuarios.php" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </main>
+    </body>
 </html>

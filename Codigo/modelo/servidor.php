@@ -90,6 +90,21 @@ switch ($datos["funcion"]) {
     case "cambiarcontrasena":
         cambiarcontrasena($datos);
         break;
+    case "getAllUsers":
+        getAllUsers();
+        break;
+    case "getUserById":
+        getUserById($datos);
+        break;
+    case "createUser":
+        createUser($datos);
+        break;
+    case "updateUser":
+        updateUser($datos);
+        break;
+    case "deleteUser":
+        deleteUser($datos);
+        break;
     default:
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "Función no válida"));
@@ -360,6 +375,142 @@ function cambiarcontrasena($datos) {
 
     $stmt->close();
 }
+
+/****************************************************************************************************/
+// Funciones para la gestión de usuarios
+/****************************************************************************************************/
+    function getAllUsers()
+    {
+        global $conn;
+
+        $sql = "SELECT * FROM usuarios";
+        $result = $conn->query($sql);
+
+        if (!$result)
+        {
+            http_response_code(500);
+            echo json_encode(array("response" => 500, "texto" => "Error en la consulta: " . $conn->error));
+            exit;
+        }
+
+        $usuarios = [];
+
+        if ($result->num_rows > 0)
+        {
+            while ($row = $result->fetch_assoc())
+            {
+                $usuarios[] = $row;
+            }
+        }
+
+        echo json_encode($usuarios);
+    }
+
+    function getUserById($datos)
+    {
+        global $conn;
+
+        $id = $datos['id'];
+
+        $sql = "SELECT * FROM usuarios WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id); // Bindeo el parámetro como entero
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if (!$result) {
+            http_response_code(500);
+            echo json_encode(array("response" => 500, "texto" => "Error en la consulta: " . $conn->error));
+            exit;
+        }
+
+        $ids = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $ids[] = $row;
+            }
+        }
+
+        echo json_encode($ids);
+    }
+
+    function createUser($datos)
+    {
+        global $conn;
+
+        $sql = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, usuario, contrasena, token, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $hashedPassword = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
+
+        $datos['correo_electronico'] = filter_var($datos['correo_electronico'], FILTER_VALIDATE_EMAIL);
+        
+        if (!$datos['correo_electronico'])
+        {
+            throw new Exception("Correo electrónico inválido.");
+        }
+
+        $stmt->bind_param("ssssssssss", $datos['nombre'], $datos['apellidos'], $datos['fecha_nacimiento'], $datos['direccion'], $datos['correo_electronico'], $datos['telefono'], $datos['usuario'], $hashedPassword, $datos['token'], $datos['role']);
+        
+        if ($stmt->execute())
+        {
+            http_response_code(201);
+            echo json_encode(array("response" => 201, "texto" => "Usuario creado correctamente"));
+        } 
+        else
+        {
+            http_response_code(500);
+            echo json_encode(array("response" => 500, "texto" => "Error al crear el usuario" . $stmt->error));
+        }
+        
+        $stmt->close();
+    }
+
+    function updateUser($datos)
+    {
+        global $conn;
+
+        $id = $datos['id'];
+
+        $sql = "UPDATE usuarios SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, direccion = ?, correo_electronico = ?, telefono = ?, usuario = ?, contrasena = ?, token = ?, role = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $hashedPassword = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
+        $stmt->bind_param("ssssssssssi",  $datos['nombre'], $datos['apellidos'], $datos['fecha_nacimiento'], $datos['direccion'], $datos['correo_electronico'], $datos['telefono'], $datos['usuario'], $hashedPassword, $datos['token'], $datos['role'], $id);
+        
+        if (!$stmt->execute())
+        {
+            http_response_code(200);
+            echo json_encode(array("response" => 200, "texto" => "Usuario actualizado correctamente"));
+        }
+        else
+        {
+            http_response_code(500);
+            echo json_encode(array("response" => 500, "texto" => "Error al actualizar el usuario: " . $stmt->error));
+        }
+
+        $stmt->close();
+    }
+
+    function deleteUser($datos)
+    {
+        global $conn;
+        $id = $datos['id'];
+
+        $sql = "DELETE FROM usuarios WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+        if (!$stmt->execute())
+        {
+            http_response_code(200);
+            echo json_encode(array("response" => 200, "texto" => "Usuario eliminado correctamente"));
+        } else {
+            http_response_code(500);
+            echo json_encode(array("response" => 500, "texto" => "Error al eliminar el usuario: " . $stmt->error));
+        }
+
+        $stmt->close();
+    }
 
 
 
@@ -644,8 +795,8 @@ function procesarJSON($datos,$usuario) {
      // Insertar en la tabla `curriculums`
      $sql = "INSERT INTO cv (usuario_id, nombre, apellidos, fecha_nacimiento, telefonos, correos, paginas_web, imagen_path) 
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("isssssss", $usuario_id, $nombre, $apellidos, $fecha_nacimiento, $telefono, $correo_electronico, $web, $imagen); 
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssssss", $usuario_id, $nombre, $apellidos, $fecha_nacimiento, $telefono, $correo_electronico, $web, $imagen); 
     if (!$stmt->execute()) {
         echo json_encode(["response" => 500, "texto" => "Error al insertar currículum: " . $stmt->error]);
         return;
