@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
             <br><hr><br>
 
             <h2>Cambiar Contraseña:</h2>
-            <form method="post" action="../controlador/configuracion.php">
+            <form method="POST" action="configuracionForm.php">
                 <label for="contrasena-actual">Contraseña Actual:</label>
                 <input type="password" name="contrasena-actual" class="form-control mb-3" placeholder="Introduce tu contraseña actual">
                 
