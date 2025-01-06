@@ -2,7 +2,7 @@
 include '../header.php';
 require_once '../../controlador/userController.php';
 
-$controladorUsuarios = new UserController();
+$controladorUsuarios = new userController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 else
 {
     $id = $_GET['id'] ?? null;
+
     if (!$id)
     {
         header("Location: index_usuarios.php");
@@ -21,7 +22,7 @@ else
 
     if (!$usuario)
     {
-        header("Location: index_usuarios.php ? mensaje=Usuario no encontrado");
+        header("Location: index_usuarios.php");
         exit;
     }
 }
@@ -82,7 +83,7 @@ else
                             </option>
                         </select>
                     </div>
-
+                    <br>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     <a href="index_usuarios.php" class="btn btn-secondary">Cancelar</a>
                 </form>

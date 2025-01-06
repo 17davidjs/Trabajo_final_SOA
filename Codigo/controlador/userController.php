@@ -74,7 +74,7 @@ class userController
     {
         try
         {
-            $response = $this->callAPI(['funcion' => 'getUserById', 'id' => $id,]);
+            $response = $this->callAPI(['funcion' => 'getUserById', 'id' => $id]);
 
             if (isset($response[0]))
             {
@@ -155,11 +155,11 @@ class userController
     {
         try
         {
-            $response = $this->callAPI(['funcion' => 'deleteUser','id' => $id,]);
+            $response = $this->callAPI(['funcion' => 'deleteUser','id' => $id]);
 
             if ($response['response'] === 200)
             {
-                header("Location: ../usuarios/index_usuarios.php");
+                header("Location: ../index.php");
             }
             else
             {

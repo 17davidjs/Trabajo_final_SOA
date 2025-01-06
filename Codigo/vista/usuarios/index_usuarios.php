@@ -2,7 +2,7 @@
 include '../header.php';
 require_once '../../controlador/userController.php';
 
-$controladorUsuarios = new UserController();
+$controladorUsuarios = new userController();
 
 // Si es una petición POST para eliminar
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
