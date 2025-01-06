@@ -1,15 +1,19 @@
 <?php include 'vista/header.php'; ?>
 
+<head>
+    <link rel="stylesheet" href="estilos/style.css">
+</head>
+
 <main class="container my-5">
     <section class="text-center">
         <h3 class="fw-bold">Bienvenido al Sistema de Gestión de Currículums</h3>
         <p class="lead">
-            Utilice el menú de navegación para acceder a las distintas funcionalidades del sistema, como gestión de
-            usuarios, manejo de currículums y generación de reportes.
+            Utilice el menú de navegación para acceder a las distintas funcionalidades del sistema, como manejo de currículums y generación de reportes.
         </p>
     </section>
 
     <section class="row mt-5">
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
@@ -19,6 +23,7 @@
                 </div>
             </div>
         </div>
+        <?php endif; ?>
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
