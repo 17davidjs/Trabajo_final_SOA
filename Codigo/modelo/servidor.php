@@ -418,7 +418,8 @@ function cambiarcontrasena($datos) {
         $stmt->execute();
         $result = $stmt->get_result();
         
-        if (!$result) {
+        if (!$result)
+        {
             http_response_code(500);
             echo json_encode(array("response" => 500, "texto" => "Error en la consulta: " . $conn->error));
             exit;
@@ -426,8 +427,10 @@ function cambiarcontrasena($datos) {
 
         $ids = [];
 
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
+        if ($result->num_rows > 0)
+        {
+            while ($row = $result->fetch_assoc())
+            {
                 $ids[] = $row;
             }
         }
@@ -472,12 +475,11 @@ function cambiarcontrasena($datos) {
 
         $id = $datos['id'];
 
-        $sql = "UPDATE usuarios SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, direccion = ?, correo_electronico = ?, telefono = ?, usuario = ?, contrasena = ?, token = ?, role = ? WHERE id = ?";
+        $sql = "UPDATE usuarios SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, direccion = ?, correo_electronico = ?, telefono = ?, usuario = ?, token = ?, role = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $hashedPassword = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
-        $stmt->bind_param("ssssssssssi",  $datos['nombre'], $datos['apellidos'], $datos['fecha_nacimiento'], $datos['direccion'], $datos['correo_electronico'], $datos['telefono'], $datos['usuario'], $hashedPassword, $datos['token'], $datos['role'], $id);
-        
-        if (!$stmt->execute())
+        $stmt->bind_param("sssssssssi",  $datos['nombre'], $datos['apellidos'], $datos['fecha_nacimiento'], $datos['direccion'], $datos['correo_electronico'], $datos['telefono'], $datos['usuario'], $datos['token'], $datos['role'], $id);
+
+        if ($stmt->execute())
         {
             http_response_code(200);
             echo json_encode(array("response" => 200, "texto" => "Usuario actualizado correctamente"));
@@ -500,11 +502,13 @@ function cambiarcontrasena($datos) {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
 
-        if (!$stmt->execute())
+        if ($stmt->execute())
         {
             http_response_code(200);
             echo json_encode(array("response" => 200, "texto" => "Usuario eliminado correctamente"));
-        } else {
+        }
+        else
+        {
             http_response_code(500);
             echo json_encode(array("response" => 500, "texto" => "Error al eliminar el usuario: " . $stmt->error));
         }

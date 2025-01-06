@@ -19,9 +19,13 @@ else
 
     $usuario = $controladorUsuarios->obtenerUsuario($id);
 
+    echo '<pre>';
+    print_r($usuario);
+    echo '</pre>';
+
     if (!$usuario)
     {
-        header("Location: index_usuarios.php?mensaje=Usuario no encontrado");
+        header("Location: index_usuarios.php ? mensaje=Usuario no encontrado");
         exit;
     }
 }
@@ -69,11 +73,6 @@ else
                     <div class="form-group">
                         <label>Usuario</label>
                         <input type="text" class="form-control" name="usuario" value="<?php echo htmlspecialchars($usuario['usuario']); ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" class="form-control" name="contrasena" placeholder="Deja vacío si no deseas cambiarla">
                     </div>
 
                     <div class="form-group">

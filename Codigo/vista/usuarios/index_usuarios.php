@@ -71,9 +71,14 @@ $controladorUsuarios->index();
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: 'eliminar=1&id=' + id
+                        body: 'eliminar=1&id=' + encodeURIComponent(id),
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.exito)
                         {
@@ -81,13 +86,9 @@ $controladorUsuarios->index();
                         }
                         else
                         {
-                            alert(data.mensaje);
+                            alert(data.mensaje || 'No se pudo eliminar el usuario');
                         }
                     })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error al eliminar el usuario');
-                    });
                 }
             }
         </script>
