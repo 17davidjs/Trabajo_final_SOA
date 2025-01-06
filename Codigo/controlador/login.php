@@ -8,6 +8,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $_POST["usuario"];
     $contrasena = $_POST["contrasena"];
 
+    global $conn;
+
+    $sql = "SELECT id FROM usuarios WHERE usuario = '$usuario'";
+    $result = $conn->query($sql);
+
+    if (!$result)
+    {
+        http_response_code(500);
+        echo json_encode(array("response" => 500, "texto" => "Error en la consulta: " . $conn->error));
+        exit;
+    }
+
+    if ($result->num_rows > 0)
+    {
+        while ($row = $result->fetch_assoc())
+        {
+            $ids = (int)$row['id'];
+        }
+    }
+
+    $_SESSION['id'] = $ids;
+
     // Preparamos los datos en formato array
     $data = array(
         "funcion" => "login",

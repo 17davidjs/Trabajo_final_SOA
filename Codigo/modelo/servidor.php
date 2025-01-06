@@ -5,7 +5,6 @@ require_once '../config/db.php';
 
 session_start();
 
-
 // Función para generar un token aleatorio
 function generarToken() {
     return bin2hex(random_bytes(16)); // Token aleatorio
@@ -95,6 +94,9 @@ switch ($datos["funcion"]) {
         break;
     case "getUserById":
         getUserById($datos);
+        break;
+    case "obtenerUserById":
+        obtenerUserById($datos);
         break;
     case "createUser":
         createUser($datos);
@@ -407,6 +409,38 @@ function cambiarcontrasena($datos) {
     }
 
     function getUserById($datos)
+    {
+        global $conn;
+
+        $id = $datos['id'];
+
+        $sql = "SELECT * FROM usuarios WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id); // Bindeo el parámetro como entero
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if (!$result)
+        {
+            http_response_code(500);
+            echo json_encode(array("response" => 500, "texto" => "Error en la consulta: " . $conn->error));
+            exit;
+        }
+
+        $ids = [];
+
+        if ($result->num_rows > 0)
+        {
+            while ($row = $result->fetch_assoc())
+            {
+                $ids[] = $row;
+            }
+        }
+
+        echo json_encode($ids);
+    }
+
+    function obtenerUserById($datos)
     {
         global $conn;
 
