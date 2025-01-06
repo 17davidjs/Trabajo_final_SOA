@@ -133,10 +133,6 @@ class userController
 
             $datos['funcion'] = 'updateUser';
 
-            echo '<pre>';
-            print_r($datos);
-            echo '</pre>';
-
             $response = $this->callAPI($datos);
 
             if ($response['response'] === 200)

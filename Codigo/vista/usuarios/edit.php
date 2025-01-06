@@ -19,10 +19,6 @@ else
 
     $usuario = $controladorUsuarios->obtenerUsuario($id);
 
-    echo '<pre>';
-    print_r($usuario);
-    echo '</pre>';
-
     if (!$usuario)
     {
         header("Location: index_usuarios.php ? mensaje=Usuario no encontrado");
