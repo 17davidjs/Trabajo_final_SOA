@@ -1,5 +1,5 @@
 <?php
-require_once('D:/xampp/htdocs/Trabajo_final_SOA/Librerias/tcpdf.php'); // Asegúrate de que la ruta sea correcta
+require_once('../../Librerias/tcpdf.php'); // Asegúrate de que la ruta sea correcta
 
 class MYPDF extends TCPDF {
     // Encabezado personalizado
