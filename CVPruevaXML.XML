@@ -2,20 +2,19 @@
   <nombre>Juan</nombre>
   <apellidos>Pérez Gómez</apellidos>
   <fecha_nacimiento>1990-05-15</fecha_nacimiento>
-  <direccion>Calle Falsa 123, Ciudad de México, México</direccion>
-  <correo_electronico>juan.perez@example.com</correo_electronico>
-  <telefono>+52 555 123 4567</telefono>
+  <telefono>123456789</telefono>
+  <correo>juan.perez@example.com</correo_electronico>
+  <pagina_web>https://juanperez.com</pagina_web>
+  <imagen_path>/images/juan_perez.jpg</imagen_path>
   <formacion_academica>
     <estudio>
       <titulo>Licenciatura en Ingeniería en Sistemas</titulo>
       <institucion>Universidad Nacional Autónoma de México</institucion>
-      <fecha_inicio>2008-08</fecha_inicio>
       <fecha_fin>2012-05</fecha_fin>
     </estudio>
     <estudio>
       <titulo>Maestría en Ciencias de la Computación</titulo>
       <institucion>Instituto Tecnológico de Estudios Superiores de Monterrey</institucion>
-      <fecha_inicio>2013-01</fecha_inicio>
       <fecha_fin>2015-12</fecha_fin>
     </estudio>
   </formacion_academica>
