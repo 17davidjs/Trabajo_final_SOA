@@ -4,15 +4,24 @@ require_once '../controlador/configuracion.php';
 
 $configurador = new configuracion();
 
-// Si es una petición POST para eliminar
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-    $configurador->delete($_POST['id']);
-    exit;
-}
-else if ($_SERVER['REQUEST_METHOD'] === 'POST')
-{
-    $configurador->editar($_POST);
+    if (isset($_POST['eliminar']))
+    {
+        $configurador->delete($_POST['id']);
+        exit;
+    }
+    else if (isset($_POST['cambio-contrasena']))
+    {
+        $configurador->cambiar_contrasena($_POST);
+        exit;
+    }
+    else
+    {
+        $configurador->editar($_POST);
+        exit;
+    }
 }
 else
 {
@@ -31,13 +40,6 @@ else
         header("Location: ../index.php");
         exit;
     }
-}
-
-// Si es una petición POST para eliminar
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
-{
-    $configurador->delete($_POST['id']);
-    exit;
 }
 ?>
 
@@ -105,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
             </form>
 
             <br><hr><br>
+             
             <h2>Eliminar Cuenta</h2>
             <p>¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.</p>
             <button onclick="confirmarEliminacion(<?php echo $usuario['id']; ?>)" class="btn btn-sm btn-danger">Eliminar Cuenta</button>
@@ -116,9 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
                 {
                     fetch('configuracionForm.php', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                         body: 'eliminar=1&id=' + encodeURIComponent(id),
                     })
                     .then(response => {
@@ -130,15 +131,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar']))
                     .then(data => {
                         if (data.exito)
                         {
-                            location.reload();
+                            window.location.href = '../index.php';
                         }
                         else
                         {
                             alert(data.mensaje || 'No se pudo eliminar el usuario');
                         }
                     })
-
-                    header("Location ../index.php");
                 }
             }
         </script>

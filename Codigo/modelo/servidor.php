@@ -86,8 +86,8 @@ switch ($datos["funcion"]) {
     case "deleteCurriculum":
         deleteCurriculum($datos);
         break;
-    case "cambiarcontrasena":
-        cambiarcontrasena($datos);
+    case "cambiarContrasena":
+        cambiarContrasena($datos);
         break;
     case "getAllUsers":
         getAllUsers();
@@ -294,11 +294,13 @@ function login($datos) {
 /****************************************************************************************************/
 // Función para cambiar contraseña de un usuario autenticado
 /****************************************************************************************************/
-function cambiarcontrasena($datos) {
+function cambiarContrasena($datos)
+{
     global $conn;
 
     // Validar que los datos requeridos estén presentes
-    if (!isset($datos["usuario"]) || !isset($datos["token"]) || !isset($datos["contrasena-actual"]) || !isset($datos["nueva-contrasena"])) {
+    if (!isset($datos["usuario"]) || !isset($datos["token"]) || !isset($datos["contrasena-actual"]) || !isset($datos["nueva-contrasena"]))
+    {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "Datos no válidos para cambiar la contraseña"));
         exit;
@@ -309,72 +311,56 @@ function cambiarcontrasena($datos) {
     $contrasena_actual = $datos["contrasena-actual"];
     $nueva_contrasena = $datos["nueva-contrasena"];
 
-    // Consultar la contraseña actual en la base de datos
-    $sql = "SELECT contrasena FROM usuarios WHERE usuario = ?";
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al preparar la consulta: " . $conn->error));
-        exit;
+    // Verificar token
+    $usuarioDB = verificarToken($token);
+
+    if ($usuario !== $usuarioDB)
+    {
+        http_response_code(401);
+        echo json_encode(['response' => 401, 'texto' => 'Usuario no autorizado']);
+        return;
     }
+
+    // Verificar contraseña actual
+    $stmt = $conn->prepare("SELECT contrasena FROM usuarios WHERE usuario = ?");
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->bind_result($hash);
+    $stmt->fetch();
     $stmt->close();
 
-    if ($result->num_rows === 0) {
-        http_response_code(404);
-        echo json_encode(array("response" => 404, "texto" => "Usuario no encontrado"));
-        exit;
-    }
-
-    $row = $result->fetch_assoc();
-
-    // Verificar que la contraseña actual sea correcta
-    if (!password_verify($contrasena_actual, $row['contrasena'])) {
+    if (!password_verify($contrasena_actual, $hash))
+    {
         http_response_code(400);
-        echo json_encode(array("response" => 400, "texto" => "La contraseña actual no coincide"));
-        exit;
-    }
-
-    // Verificar que el token sea válido
-    $usuarioValidado = verificarToken($token);
-    if ($usuarioValidado !== $usuario) {
-        http_response_code(401);
-        echo json_encode(array("response" => 401, "texto" => "Token no válido o no coincide con el usuario"));
-        exit;
+        echo json_encode(['response' => 400, 'texto' => 'Contraseña actual incorrecta']);
+        return;
     }
 
     // Validar que la nueva contraseña tenga al menos 8 caracteres
-    if (strlen($nueva_contrasena) < 8) {
+    if (strlen($nueva_contrasena) < 8)
+    {
         http_response_code(400);
         echo json_encode(array("response" => 400, "texto" => "La nueva contraseña debe tener al menos 8 caracteres"));
         exit;
     }
 
+
+    // Actualizar nueva contraseña
+    $hash_nueva_contrasena = password_hash($nueva_contrasena, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("UPDATE usuarios SET contrasena = ? WHERE usuario = ?");
+    $stmt->bind_param("ss", $hash_nueva_contrasena, $usuario);
     
-    // Generar el hash de la nueva contraseña
-    $contrasena_hash = password_hash($nueva_contrasena, PASSWORD_DEFAULT);
-
-    // Actualizar la contraseña en la base de datos
-    $sql = "UPDATE usuarios SET contrasena = ? WHERE usuario = ?";
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al preparar la consulta de actualización: " . $conn->error));
-        exit;
-    }
-
-    $stmt->bind_param("ss", $contrasena_hash, $usuario);
-
-    if ($stmt->execute()) {
+    if ($stmt->execute())
+    {
         http_response_code(200);
         echo json_encode(array("response" => 200, "texto" => "Contraseña modificada correctamente"));
-    } else {
+    }
+    else
+    {
         http_response_code(500);
         echo json_encode(array("response" => 500, "texto" => "Error al modificar la contraseña: " . $stmt->error));
     }
-
+    
     $stmt->close();
 }
 
