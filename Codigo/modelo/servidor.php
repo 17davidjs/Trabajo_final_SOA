@@ -94,15 +94,6 @@ switch ($datos["funcion"]) {
     case "subirFichero":
         subir($datos);
         break;
-    case "addCurriculum":
-        addCurriculum($datos);
-        break;
-    case "updateCurriculum":
-        updateCurriculum($datos);
-        break;
-    case "deleteCurriculum":
-        deleteCurriculum($datos);
-        break;
     case "cambiarContrasena":
         cambiarContrasena($datos);
         break;
@@ -126,95 +117,6 @@ switch ($datos["funcion"]) {
         echo json_encode(array("response" => 400, "texto" => "Función no válida"));
         break;
 }
-
-/****************************************************************************************************/
-// Funciones para la gestión de currículums
-/****************************************************************************************************/
-
-
-function addCurriculum($datos)
-{
-    global $conn;
-
-    // Datos básicos
-    $nombre = $datos['nombre'];
-    $apellidos = $datos['apellidos'];
-    $fecha_nacimiento = $datos['fecha_nacimiento'];
-    $datos_interes = $datos['datos_interes'];
-
-    // Manejar imagen
-    $imagen_path = '';
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $imagen_path = 'uploads/' . basename($_FILES['imagen']['name']);
-        move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_path);
-    }
-
-    // Insertar usuario
-    $query = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, datos_interes, imagen_path) 
-              VALUES ('$nombre', '$apellidos', '$fecha_nacimiento', '$datos_interes', '$imagen_path')";
-    mysqli_query($conn, $query);
-    $usuario_id = mysqli_insert_id($conn);
-
-    // Insertar contacto
-    if (isset($datos['telefono'])) {
-        foreach ($datos['telefono'] as $index => $telefono) {
-            $correo = $datos['correo_electronico'][$index];
-            $paginaweb = $datos['paginaweb'][$index];
-            $query = "INSERT INTO contacto (usuario_id, telefono, correo_electronico, paginaweb) 
-                      VALUES ($usuario_id, '$telefono', '$correo', '$paginaweb')";
-            mysqli_query($conn, $query);
-        }
-    }
-
-    // Insertar educación
-    if (isset($datos['titulo'])) {
-        foreach ($datos['titulo'] as $index => $titulo) {
-            $institucion = $datos['institucion'][$index];
-            $fecha = $datos['fecha'][$index];
-            $query = "INSERT INTO educacion (usuario_id, titulo, institucion, fecha) 
-                      VALUES ($usuario_id, '$titulo', '$institucion', '$fecha')";
-            mysqli_query($conn, $query);
-        }
-    }
-
-    // Insertar idiomas
-    if (isset($datos['Idioma'])) {
-        foreach ($datos['Idioma'] as $index => $idioma) {
-            $nivel = $datos['nivel'][$index];
-            $query = "INSERT INTO idiomas (usuario_id, idioma, nivel) 
-                      VALUES ($usuario_id, '$idioma', '$nivel')";
-            mysqli_query($conn, $query);
-        }
-    }
-
-    // Insertar experiencia laboral
-    if (isset($datos['puesto'])) {
-        foreach ($datos['puesto'] as $index => $puesto) {
-            $empresa = $datos['empresa'][$index];
-            $fecha_inicio = $datos['fecha_inicio'][$index];
-            $fecha_fin = $datos['fecha_fin'][$index];
-            $descripcion = $datos['descripcion'][$index];
-            $query = "INSERT INTO experiencia_laboral (usuario_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) 
-                      VALUES ($usuario_id, '$puesto', '$empresa', '$fecha_inicio', '$fecha_fin', '$descripcion')";
-            mysqli_query($conn, $query);
-        }
-    }
-
-    // Insertar habilidades
-    if (isset($datos['habilidades'])) {
-        foreach ($datos['habilidades'] as $habilidad) {
-            $query = "INSERT INTO habilidades (usuario_id, habilidad) 
-                      VALUES ($usuario_id, '$habilidad')";
-            mysqli_query($conn, $query);
-        }
-    }
-
-    return ['response' => 200, 'texto' => 'Datos guardados con éxito.'];
-}
-
-
-/****************************************************************************************************/
-
 
 /****************************************************************************************************/
 // Funciones para la autenticación de usuarios
@@ -705,7 +607,7 @@ function procesarCSV($contenido, $cv_id) {
                         guardarEducacionCSV($datos, $cv_id);
                         break;
                     case "experiencia_laboral":
-                        guardarExperienciaLaboralCSV($dato, $cv_id);
+                        guardarExperienciaLaboralCSV($datos, $cv_id);
                         break;
                     case "habilidades":
                         // Procesar habilidades, las cuales son solo un listado

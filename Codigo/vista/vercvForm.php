@@ -41,7 +41,7 @@ include 'header.php';
                     <div class="col-md-3">
                         <!-- Imagen del usuario -->
                         <?php if ($imagen_path): ?>
-                            <img src="<?php echo $imagen_path; ?>" class="img-fluid rounded" alt="Foto de <?php echo $nombre; ?>">
+                            <img src= "<?php echo str_replace('C:/xampp/htdocs/', 'http://localhost/', $imagen_path); ?>" class="img-fluid alt="Foto de <?php echo $nombre; ?>">
                         <?php else: ?>
                             <img src="default-avatar.png" class="img-fluid rounded" alt="Sin imagen">
                         <?php endif; ?>
