@@ -1147,6 +1147,8 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Insertar en `formacion_academica`
+
+    //añadir campo curriculum_id a la tabla formacion
     $sql = "INSERT INTO formacion ( titulo, institucion, fecha_fin) 
             VALUES ( ?, ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -1169,6 +1171,7 @@ function procesarXML($datos, $usuario) {
     $responsabilidad_id="";
 
     // Insertar en `experiencia_laboral`
+    //añadir campo curriculum_id a la tabla experiencias
     $sql = "INSERT INTO experiencias ( puesto, empresa, fecha_inicio, fecha_fin, responsabilidades) 
             VALUES ( ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -1193,6 +1196,7 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Insertar en `idiomas`
+    //añadir campo curriculum_id a la tabla idiomas
     $sql = "INSERT INTO idiomas ( idioma, nivel) 
             VALUES ( ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -1205,6 +1209,7 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Insertar en `habilidades`
+    //añadir campo curriculum_id a la tabla habilidades
     $sql = "INSERT INTO habilidades ( habilidad) 
             VALUES ( ?)";
     $stmt = $conn->prepare($sql);
@@ -1216,6 +1221,7 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Insertar en `datos_interes`
+    //añadir campo curriculum_id a la tabla intereses
     $sql = "INSERT INTO intereses ( interes) 
             VALUES ( ?)";
     $stmt = $conn->prepare($sql);
@@ -1227,6 +1233,7 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Insertar en `responsabilidad`
+    //añador campo id_experiencia a la tabla responsabilidad
     $sql = "INSERT INTO responsabilidad ( responsabilidad) 
         VALUES ( ?)";
     $stmt = $conn->prepare($sql);
@@ -1239,6 +1246,8 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Obtener el ID de las tablas `experiencias`, `formacion`, `habilidades`, `idiomas`, `intereses` y `responsabilidad`
+    
+
     $sql = "SELECT id FROM experiencias WHERE curriculum_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $curriculumID);
