@@ -9,12 +9,12 @@
     "formacion_academica": [
       {
         "titulo": "Ingeniería Informática",
-        "institucion": "Universidad Nacional",
+        "centro": "Universidad Nacional",
         "fecha_fin": "2012-06-30"
       },
       {
         "titulo": "Maestría en Ciencias de la Computación",
-        "institucion": "Universidad Nacional",
+        "centro": "Universidad Nacional",
         "fecha_fin": "2015-06-30"
       }
     ],
