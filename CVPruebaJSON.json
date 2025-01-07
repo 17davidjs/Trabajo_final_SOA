@@ -2,8 +2,8 @@
     "nombre": "Juan",
     "apellidos": "Pérez García",
     "fecha_nacimiento": "1990-05-15",
-    "telefono": "123456789",
-    "correo": "juan.perez@example.com",
+    "telefonos": "123456789",
+    "correos": "juan.perez@example.com",
     "pagina_web": "https://juanperez.com",
     "imagen_path": "/images/juan_perez.jpg",
     "formacion_academica": [
