@@ -644,16 +644,22 @@ function subir($datos) {
         exit;
     }
 
+    $id = obtenerUsuarioID($usuario);
+    $query = "INSERT INTO curriculums (usuario_id) VALUES ('$id')";
+    mysqli_query($conn, $query);
+    $cv_id = mysqli_insert_id($conn);
+
+
     switch ($tipoArchivo) {
         case "text/csv":
-            procesarCSV($contenido, $usuarioValidado);
+            procesarCSV($contenido, $cv_id);
             break;
         case "application/json":
-            procesarJSON($contenido, $usuarioValidado);
+            procesarJSON($contenido, $cv_id);
             break;
         case "application/xml":
         case "text/xml":
-            procesarXML($contenido, $usuarioValidado);
+            procesarXML($contenido, $cv_id);
             break;
         default:
             http_response_code(400);
@@ -668,7 +674,7 @@ function subir($datos) {
     echo json_encode(array("response" => 200, "texto" => "Currículum procesado y almacenado correctamente"));
 }
 
-function procesarCSV($contenido, $usuario) {
+function procesarCSV($contenido, $cv_id) {
     global $conn;
     $lineas = explode(PHP_EOL, $contenido);
     $encabezados = str_getcsv(array_shift($lineas)); // Extraer los encabezados del archivo CSV
@@ -693,19 +699,19 @@ function procesarCSV($contenido, $usuario) {
             if ($tablaActual) {
                 switch ($tablaActual) {
                     case "contacto":
-                        guardarContactoCSV($datos, $usuario);
+                        guardarContactoCSV($datos, $cv_id);
                         break;
                     case "educacion":
-                        guardarEducacionCSV($datos, $usuario);
+                        guardarEducacionCSV($datos, $cv_id);
                         break;
                     case "experiencia_laboral":
-                        guardarExperienciaLaboralCSV($datos, $usuario);
+                        guardarExperienciaLaboralCSV($dato, $cv_id);
                         break;
                     case "habilidades":
                         // Procesar habilidades, las cuales son solo un listado
                         foreach ($fila as $habilidad) {
                             if ($habilidad !== "tabla") { // Evitar procesar la columna 'tabla'
-                                guardarHabilidadCSV($habilidad, $usuario);
+                                guardarHabilidadCSV($habilidad, $cv_id);
                             }
                         }
                         break;
@@ -713,7 +719,7 @@ function procesarCSV($contenido, $usuario) {
                         // Procesar idiomas, cada uno con su nivel
                         if (count($fila) == 2) {
                             $datos_idioma = array_combine(['idioma', 'nivel'], $fila);
-                            guardarIdiomaCSV($datos_idioma, $usuario);
+                            guardarIdiomaCSV($datos_idioma, $cv_id);
                         }
                         break;
                     default:
@@ -727,7 +733,7 @@ function procesarCSV($contenido, $usuario) {
 
 
 
-function procesarJSON($contenido, $usuario) {
+function procesarJSON($contenido, $cv_id) {
     $datos = json_decode($contenido, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
@@ -738,32 +744,32 @@ function procesarJSON($contenido, $usuario) {
 
     // Guardar cada sección en su respectiva tabla
     if (isset($datos['contacto'])) {
-        guardarContacto($datos['contacto'], $usuario);
+        guardarContacto($datos['contacto'], $cv_id);
     }
     if (isset($datos['educacion'])) {
         foreach ($datos['educacion'] as $educacion) {
-            guardarEducacion($educacion, $usuario);
+            guardarEducacion($educacion, $cv_id);
         }
     }
     if (isset($datos['experiencia_laboral'])) {
         foreach ($datos['experiencia_laboral'] as $experiencia) {
-            guardarExperienciaLaboral($experiencia, $usuario);
+            guardarExperienciaLaboral($experiencia, $cv_id);
         }
     }
     if (isset($datos['habilidades'])) {
         foreach ($datos['habilidades'] as $habilidad) {
-            guardarHabilidad($habilidad, $usuario); 
+            guardarHabilidad($habilidad, $cv_id); 
         }
     }
     if (isset($datos['idiomas'])) {
         foreach ($datos['idiomas'] as $idioma) {
-            guardarIdioma($idioma, $usuario);
+            guardarIdioma($idioma, $cv_id);
         }
     }
 }
 
 
-function procesarXML($contenido, $usuario) {
+function procesarXML($contenido, $cv_id) {
     $xml = simplexml_load_string($contenido);
     if ($xml === false) {
         $errors = libxml_get_errors();
@@ -780,71 +786,67 @@ function procesarXML($contenido, $usuario) {
 
     // Guardar datos en las tablas correspondientes
     if (isset($datos['contacto'])) {
-        guardarContacto($datos['contacto'], $usuario);
+        guardarContacto($datos['contacto'], $cv_id);
     }
     if (isset($datos['educacion']['item'])) {
         // Si hay más de un elemento en 'educacion', se debe recorrer cada 'item'
         foreach ($datos['educacion']['item'] as $educacion) {
-            guardarEducacion($educacion, $usuario);
+            guardarEducacion($educacion, $cv_id);
         }
     }
     if (isset($datos['experiencia_laboral']['item'])) {
         // Lo mismo para experiencia_laboral
         foreach ($datos['experiencia_laboral']['item'] as $experiencia) {
-            guardarExperienciaLaboral($experiencia, $usuario);
+            guardarExperienciaLaboral($experiencia, $cv_id);
         }
     }
     if (isset($datos['habilidades']['habilidad'])) {
         // Si hay varias habilidades, recorrerlas
         foreach ($datos['habilidades']['habilidad'] as $habilidad) {
-            guardarHabilidad($habilidad, $usuario);
+            guardarHabilidad($habilidad, $cv_id);
         }
     }
     if (isset($datos['idiomas']['idioma'])) {
         // Y lo mismo para los idiomas
         foreach ($datos['idiomas']['idioma'] as $idioma) {
-            guardarIdioma($idioma, $usuario);
+            guardarIdioma($idioma, $cv_id);
         }
     }
 }
 
 
-function guardarContacto($datos, $usuario) {
+function guardarContacto($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
-    $sql = "INSERT INTO contacto (usuario_id, telefono, correo_electronico, paginaweb) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO contacto (cv_id, telefono, correo_electronico, paginaweb) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isss", $usuario_id, $datos['telefono'], $datos['correo_electronico'], $datos['peginaweb']);
+    $stmt->bind_param("isss", $cv_id, $datos['telefono'], $datos['correo_electronico'], $datos['peginaweb']);
     $stmt->execute();
 }
 
 
-function guardarEducacion($datos, $usuario) {
+function guardarEducacion($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
-    $sql = "INSERT INTO educacion (usuario_id, titulo, institucion, fecha) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO educacion (cv_id, titulo, institucion, fecha) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isss", $usuario_id, $datos['titulo'], $datos['institucion'], $datos['fecha']);
+    $stmt->bind_param("isss", $cv_id, $datos['titulo'], $datos['institucion'], $datos['fecha']);
     $stmt->execute();
 }
 
 
-function guardarExperienciaLaboral($datos, $usuario) {
+function guardarExperienciaLaboral($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
-    $sql = "INSERT INTO experiencia_laboral (usuario_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO experiencia_laboral (cv_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isssss", $usuario_id, $datos['puesto'], $datos['empresa'], $datos['fecha_inicio'], $datos['fecha_fin'], $datos['descripcion']);
+    $stmt->bind_param("isssss", $cv_id, $datos['puesto'], $datos['empresa'], $datos['fecha_inicio'], $datos['fecha_fin'], $datos['descripcion']);
     $stmt->execute();
 }
 
 
-function guardarHabilidad($habilidad, $usuario) {
+function guardarHabilidad($habilidad, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
     // Validar que la habilidad no esté vacía
     if (empty($habilidad)) {
@@ -853,20 +855,19 @@ function guardarHabilidad($habilidad, $usuario) {
         exit;
     }
 
-    $sql = "INSERT INTO habilidades (usuario_id, habilidad) VALUES (?, ?)";
+    $sql = "INSERT INTO habilidades (cv_id, habilidad) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $usuario_id, $habilidad);
+    $stmt->bind_param("is", $cv_id, $habilidad);
     $stmt->execute();
 }
 
 
-function guardarIdioma($datos, $usuario) {
+function guardarIdioma($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
-    $sql = "INSERT INTO idiomas (usuario_id, idioma, nivel) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO idiomas (cv_id, idioma, nivel) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $usuario_id, $datos['idioma'], $datos['nivel']);
+    $stmt->bind_param("iss", $cv_id, $datos['idioma'], $datos['nivel']);
     $stmt->execute();
 }
 
@@ -875,9 +876,8 @@ function guardarIdioma($datos, $usuario) {
 // Funciones para guardar currículums en la base de datos en CSV
 /****************************************************************************************************/
 
-function guardarContactoCSV($datos, $usuario) {
+function guardarContactoCSV($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
     // Verificar que las claves existen y asignar valores
     $telefono = isset($datos['telefono']) ? $datos['telefono'] : '';
@@ -886,17 +886,16 @@ function guardarContactoCSV($datos, $usuario) {
 
     // Verificar que los valores no estén vacíos antes de proceder con la inserción
     if (!empty($telefono) && !empty($correo_electronico) && !empty($paginaweb)) {
-        $sql = "INSERT INTO contacto (usuario_id, telefono, correo_electronico, paginaweb) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO contacto (cv_id, telefono, correo_electronico, paginaweb) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $usuario_id, $telefono, $correo_electronico, $paginaweb);
+        $stmt->bind_param("isss", $cv_id, $telefono, $correo_electronico, $paginaweb);
         $stmt->execute();
     }
 }
 
 
-function guardarEducacionCSV($datos, $usuario) {
+function guardarEducacionCSV($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
     // Verificar que las claves existen y asignar valores
     $titulo = isset($datos['titulo']) ? $datos['titulo'] : '';
@@ -905,17 +904,16 @@ function guardarEducacionCSV($datos, $usuario) {
 
     // Verificar que los valores no estén vacíos antes de proceder con la inserción
     if (!empty($titulo) && !empty($institucion) && !empty($fecha)) {
-        $sql = "INSERT INTO educacion (usuario_id, titulo, institucion, fecha) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO educacion (cv_id, titulo, institucion, fecha) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $usuario_id, $titulo, $institucion, $fecha);
+        $stmt->bind_param("isss", $cv_id, $titulo, $institucion, $fecha);
         $stmt->execute();
     }
 }
 
 
-function guardarExperienciaLaboralCSV($datos, $usuario) {
+function guardarExperienciaLaboralCSV($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
     // Verificar que las claves existen y asignar valores
     $puesto = isset($datos['puesto']) ? $datos['puesto'] : '';
@@ -926,31 +924,29 @@ function guardarExperienciaLaboralCSV($datos, $usuario) {
 
     // Verificar que los valores no estén vacíos antes de proceder con la inserción
     if (!empty($puesto) && !empty($empresa) && !empty($fecha_inicio)) {
-        $sql = "INSERT INTO experiencia_laboral (usuario_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO experiencia_laboral (cv_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isssss", $usuario_id, $puesto, $empresa, $fecha_inicio, $fecha_fin, $descripcion);
+        $stmt->bind_param("isssss", $cv_id, $puesto, $empresa, $fecha_inicio, $fecha_fin, $descripcion);
         $stmt->execute();
     }
 }
 
 
-function guardarHabilidadCSV($habilidad, $usuario) {
+function guardarHabilidadCSV($habilidad, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
     // Validar que la habilidad no esté vacía
     if (!empty($habilidad)) {
-        $sql = "INSERT INTO habilidades (usuario_id, habilidad) VALUES (?, ?)";
+        $sql = "INSERT INTO habilidades (cv_id, habilidad) VALUES (?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("is", $usuario_id, $habilidad);
+        $stmt->bind_param("is", $cv_id, $habilidad);
         $stmt->execute();
     }
 }
 
 
-function guardarIdiomaCSV($datos, $usuario) {
+function guardarIdiomaCSV($datos, $cv_id) {
     global $conn;
-    $usuario_id = obtenerUsuarioID($usuario);
 
     // Verificar que las claves existen y asignar valores
     $idioma = isset($datos['idioma']) ? $datos['idioma'] : '';
@@ -958,9 +954,9 @@ function guardarIdiomaCSV($datos, $usuario) {
 
     // Verificar que los valores no estén vacíos antes de proceder con la inserción
     if (!empty($idioma) && !empty($nivel)) {
-        $sql = "INSERT INTO idiomas (usuario_id, idioma, nivel) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO idiomas (cv_id, idioma, nivel) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iss", $usuario_id, $idioma, $nivel);
+        $stmt->bind_param("iss", $cv_id, $idioma, $nivel);
         $stmt->execute();
     }
 }

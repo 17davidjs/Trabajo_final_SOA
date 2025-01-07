@@ -1,33 +1,37 @@
 <?php
+session_start();
 require_once '../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Datos básicos
-    $nombre = $_POST['nombre'];
-    $apellidos = $_POST['apellidos'];
-    $fecha_nacimiento = $_POST['fecha_nacimiento'];
-    $datos_interes = $_POST['datos_interes'];
+    // Usar el usuario que ya está logueado
+    $id = $_SESSION['id']; // El ID del usuario que está logueado
 
     // Manejar imagen
     $imagen_path = '';
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $imagen_path = 'uploads/' . basename($_FILES['imagen']['name']);
-        move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_path);
+        $imagen_dir = '../Imagenes/';
+        if (!is_dir($imagen_dir)) {
+            mkdir($imagen_dir, 0777, true);
+        }
+        $imagen_path = $imagen_dir . basename($_FILES['imagen']['name']);
+        if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_path)) {
+            echo "Error al mover el archivo subido.";
+            exit;
+        }
     }
-
-    // Insertar usuario
-    $query = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, datos_interes, imagen_path) 
-              VALUES ('$nombre', '$apellidos', '$fecha_nacimiento', '$datos_interes', '$imagen_path')";
+    
+    // Insertar un nuevo currículum asociado al usuario
+    $query = "INSERT INTO curriculums (usuario_id) VALUES ('$id')";
     mysqli_query($conn, $query);
-    $usuario_id = mysqli_insert_id($conn);
+    $cv_id = mysqli_insert_id($conn);  // Obtener el cv_id generado
 
     // Insertar contacto
     if (isset($_POST['telefono'])) {
         foreach ($_POST['telefono'] as $index => $telefono) {
             $correo = $_POST['correo_electronico'][$index];
             $paginaweb = $_POST['paginaweb'][$index];
-            $query = "INSERT INTO contacto (usuario_id, telefono, correo_electronico, paginaweb) 
-                      VALUES ($usuario_id, '$telefono', '$correo', '$paginaweb')";
+            $query = "INSERT INTO contacto (cv_id, telefono, correo_electronico, paginaweb) 
+                      VALUES ($cv_id, '$telefono', '$correo', '$paginaweb')";
             mysqli_query($conn, $query);
         }
     }
@@ -37,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($_POST['titulo'] as $index => $titulo) {
             $institucion = $_POST['institucion'][$index];
             $fecha = $_POST['fecha'][$index];
-            $query = "INSERT INTO educacion (usuario_id, titulo, institucion, fecha) 
-                      VALUES ($usuario_id, '$titulo', '$institucion', '$fecha')";
+            $query = "INSERT INTO educacion (cv_id, titulo, institucion, fecha) 
+                      VALUES ($cv_id, '$titulo', '$institucion', '$fecha')";
             mysqli_query($conn, $query);
         }
     }
@@ -47,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['Idioma'])) {
         foreach ($_POST['Idioma'] as $index => $idioma) {
             $nivel = $_POST['nivel'][$index];
-            $query = "INSERT INTO idiomas (usuario_id, idioma, nivel) 
-                      VALUES ($usuario_id, '$idioma', '$nivel')";
+            $query = "INSERT INTO idiomas (cv_id, idioma, nivel) 
+                      VALUES ($cv_id, '$idioma', '$nivel')";
             mysqli_query($conn, $query);
         }
     }
@@ -60,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fecha_inicio = $_POST['fecha_inicio'][$index];
             $fecha_fin = $_POST['fecha_fin'][$index];
             $descripcion = $_POST['descripcion'][$index];
-            $query = "INSERT INTO experiencia_laboral (usuario_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) 
-                      VALUES ($usuario_id, '$puesto', '$empresa', '$fecha_inicio', '$fecha_fin', '$descripcion')";
+            $query = "INSERT INTO experiencia_laboral (cv_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) 
+                      VALUES ($cv_id, '$puesto', '$empresa', '$fecha_inicio', '$fecha_fin', '$descripcion')";
             mysqli_query($conn, $query);
         }
     }
@@ -69,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insertar habilidades
     if (isset($_POST['habilidades'])) {
         foreach ($_POST['habilidades'] as $habilidad) {
-            $query = "INSERT INTO habilidades (usuario_id, habilidad) 
-                      VALUES ($usuario_id, '$habilidad')";
+            $query = "INSERT INTO habilidades (cv_id, habilidad) 
+                      VALUES ($cv_id, '$habilidad')";
             mysqli_query($conn, $query);
         }
     }

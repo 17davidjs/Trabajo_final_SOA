@@ -1,7 +1,6 @@
 <?php
 require_once '../config/db.php';
 include 'header.php'; 
-
 ?>
 <body>
     <div class="container my-5">
@@ -9,18 +8,25 @@ include 'header.php';
 
         <?php
         $usuario = $_SESSION['id'];
-        // Consulta para obtener todos los usuarios
-        $query = "SELECT * FROM usuarios where id = $usuario";
-        $result = mysqli_query($conn, $query);
 
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $usuario_id = $row['id'];
-                $nombre = $row['nombre'];
-                $apellidos = $row['apellidos'];
-                $fecha_nacimiento = $row['fecha_nacimiento'];
-                $datos_interes = $row['datos_interes'];
-                $imagen_path = $row['imagen_path'];
+        // Consulta para obtener todos los currículums del usuario
+        $curriculums_query = "SELECT * FROM curriculums WHERE usuario_id = '$usuario'";
+        $curriculums_result = mysqli_query($conn, $curriculums_query);
+
+        if (mysqli_num_rows($curriculums_result) > 0) {
+            while ($cv_row = mysqli_fetch_assoc($curriculums_result)) {
+                $cv_id = $cv_row['cv_id'];
+                
+                // Consulta para obtener los detalles del usuario
+                $usuario_query = "SELECT * FROM usuarios WHERE id = '$usuario'";
+                $usuario_result = mysqli_query($conn, $usuario_query);
+                $usuario_data = mysqli_fetch_assoc($usuario_result);
+                
+                $nombre = $usuario_data['nombre'];
+                $apellidos = $usuario_data['apellidos'];
+                $fecha_nacimiento = $usuario_data['fecha_nacimiento'];
+                $datos_interes = $usuario_data['datos_interes'];
+                $imagen_path = $usuario_data['imagen_path'];
         ?>
 
         <div class="card my-4">
@@ -38,12 +44,12 @@ include 'header.php';
                         <h3><?php echo $nombre . ' ' . $apellidos; ?></h3>
                         <p><strong>Fecha de Nacimiento:</strong> <?php echo $fecha_nacimiento; ?></p>
                         <p><strong>Datos de Interés:</strong> <?php echo nl2br($datos_interes); ?></p>
-                        
-                        <!-- Mostrar datos dinámicos -->
+
+                        <!-- Mostrar datos dinámicos de contacto asociados al cv_id -->
                         <h4>Contacto</h4>
                         <ul>
                             <?php
-                            $contacto_query = "SELECT * FROM contacto WHERE usuario_id = $usuario_id";
+                            $contacto_query = "SELECT * FROM contacto WHERE cv_id = $cv_id";
                             $contacto_result = mysqli_query($conn, $contacto_query);
                             while ($contacto = mysqli_fetch_assoc($contacto_result)) {
                                 echo "<li>Teléfono: {$contacto['telefono']}, Correo: {$contacto['correo_electronico']}, Página web: {$contacto['paginaweb']}</li>";
@@ -54,7 +60,7 @@ include 'header.php';
                         <h4>Formación Académica</h4>
                         <ul>
                             <?php
-                            $educacion_query = "SELECT * FROM educacion WHERE usuario_id = $usuario_id";
+                            $educacion_query = "SELECT * FROM educacion WHERE cv_id = $cv_id";
                             $educacion_result = mysqli_query($conn, $educacion_query);
                             while ($educacion = mysqli_fetch_assoc($educacion_result)) {
                                 echo "<li>Título: {$educacion['titulo']}, Institución: {$educacion['institucion']}, Fecha: {$educacion['fecha']}</li>";
@@ -65,7 +71,7 @@ include 'header.php';
                         <h4>Idiomas</h4>
                         <ul>
                             <?php
-                            $idiomas_query = "SELECT * FROM idiomas WHERE usuario_id = $usuario_id";
+                            $idiomas_query = "SELECT * FROM idiomas WHERE cv_id = $cv_id";
                             $idiomas_result = mysqli_query($conn, $idiomas_query);
                             while ($idioma = mysqli_fetch_assoc($idiomas_result)) {
                                 echo "<li>{$idioma['idioma']} (Nivel: {$idioma['nivel']})</li>";
@@ -76,7 +82,7 @@ include 'header.php';
                         <h4>Experiencia Laboral</h4>
                         <ul>
                             <?php
-                            $experiencia_query = "SELECT * FROM experiencia_laboral WHERE usuario_id = $usuario_id";
+                            $experiencia_query = "SELECT * FROM experiencia_laboral WHERE cv_id = $cv_id";
                             $experiencia_result = mysqli_query($conn, $experiencia_query);
                             while ($experiencia = mysqli_fetch_assoc($experiencia_result)) {
                                 echo "<li>Puesto: {$experiencia['puesto']}, Empresa: {$experiencia['empresa']}, Desde: {$experiencia['fecha_inicio']} hasta {$experiencia['fecha_fin']}. Descripción: {$experiencia['descripcion']}</li>";
@@ -87,7 +93,7 @@ include 'header.php';
                         <h4>Habilidades</h4>
                         <ul>
                             <?php
-                            $habilidades_query = "SELECT * FROM habilidades WHERE usuario_id = $usuario_id";
+                            $habilidades_query = "SELECT * FROM habilidades WHERE cv_id = $cv_id";
                             $habilidades_result = mysqli_query($conn, $habilidades_query);
                             while ($habilidad = mysqli_fetch_assoc($habilidades_result)) {
                                 echo "<li>{$habilidad['habilidad']}</li>";
