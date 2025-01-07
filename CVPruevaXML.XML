@@ -9,12 +9,12 @@
   <formacion_academica>
     <estudio>
       <titulo>Licenciatura en Ingeniería en Sistemas</titulo>
-      <institucion>Universidad Nacional Autónoma de México</institucion>
+      <centro>Universidad Nacional Autónoma de México</centro>
       <fecha_fin>2012-05</fecha_fin>
     </estudio>
     <estudio>
       <titulo>Maestría en Ciencias de la Computación</titulo>
-      <institucion>Instituto Tecnológico de Estudios Superiores de Monterrey</institucion>
+      <centro>Instituto Tecnológico de Estudios Superiores de Monterrey</centro>
       <fecha_fin>2015-12</fecha_fin>
     </estudio>
   </formacion_academica>
