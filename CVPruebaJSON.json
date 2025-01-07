@@ -1,67 +1,65 @@
 {
-  "nombre": "Juan",
-  "apellidos": "Pérez García",
-  "fecha_nacimiento": "1990-05-15",
-  "telefono": "123456789",
-  "correo": "juan.perez@example.com",
-  "pagina_web": "https://juanperez.com",
-  "imagen_path": "/images/juan_perez.jpg",
-  "formacion_academica": [
-    {
-      "titulo": "Ingeniería Informática",
-      "institucion": "Universidad Nacional",
-      "fecha_inicio": "2008-09-01",
-      "fecha_fin": "2012-06-30"
-    },
-    {
-      "titulo": "Maestría en Ciencias de la Computación",
-      "institucion": "Universidad Nacional",
-      "fecha_inicio": "2013-09-01",
-      "fecha_fin": "2015-06-30"
-    }
-  ],
-  "experiencia_laboral": [
-    {
-      "puesto": "Desarrollador de Software",
-      "empresa": "Tech Solutions",
-      "fecha_inicio": "2015-07-01",
-      "fecha_fin": "2018-12-31",
-      "responsabilidades": [
-        "Desarrollar aplicaciones web utilizando PHP y JavaScript.",
-        "Mantener sistemas existentes y corregir errores.",
-        "Colaborar con equipos de diseño y marketing."
-      ]
-    },
-    {
-      "puesto": "Líder de Proyecto",
-      "empresa": "Innovatech Corp",
-      "fecha_inicio": "2019-01-01",
-      "fecha_fin": "2024-12-31",
-      "responsabilidades": [
-        "Gestionar proyectos de desarrollo de software.",
-        "Coordinar equipos multidisciplinarios.",
-        "Asegurar la entrega a tiempo y dentro del presupuesto."
-      ]
-    }
-  ],
-  "idiomas": [
-    {
-      "idioma": "Inglés",
-      "nivel": "Avanzado"
-    },
-    {
-      "idioma": "Francés",
-      "nivel": "Intermedio"
-    }
-  ],
-  "habilidades": [
-    "Programación en Python, Java, y C++",
-    "Gestíon de proyectos ágiles",
-    "Análisis de datos con herramientas de visualización"
-  ],
-  "datos_interes": [
-    "Aficionado al ajedrez.",
-    "Participante en maratones de código.",
-    "Voluntario en organizaciones de enseñanza de tecnología."
-  ]
-}
+    "nombre": "Juan",
+    "apellidos": "Pérez García",
+    "fecha_nacimiento": "1990-05-15",
+    "telefono": "123456789",
+    "correo": "juan.perez@example.com",
+    "pagina_web": "https://juanperez.com",
+    "imagen_path": "/images/juan_perez.jpg",
+    "formacion_academica": [
+      {
+        "titulo": "Ingeniería Informática",
+        "institucion": "Universidad Nacional",
+        "fecha_fin": "2012-06-30"
+      },
+      {
+        "titulo": "Maestría en Ciencias de la Computación",
+        "institucion": "Universidad Nacional",
+        "fecha_fin": "2015-06-30"
+      }
+    ],
+    "experiencia_laboral": [
+      {
+        "puesto": "Desarrollador de Software",
+        "empresa": "Tech Solutions",
+        "fecha_inicio": "2015-07-01",
+        "fecha_fin": "2018-12-31",
+        "responsabilidades": [
+          "Desarrollar aplicaciones web utilizando PHP y JavaScript.",
+          "Mantener sistemas existentes y corregir errores.",
+          "Colaborar con equipos de diseño y marketing."
+        ]
+      },
+      {
+        "puesto": "Líder de Proyecto",
+        "empresa": "Innovatech Corp",
+        "fecha_inicio": "2019-01-01",
+        "fecha_fin": "2024-12-31",
+        "responsabilidades": [
+          "Gestionar proyectos de desarrollo de software.",
+          "Coordinar equipos multidisciplinarios.",
+          "Asegurar la entrega a tiempo y dentro del presupuesto."
+        ]
+      }
+    ],
+    "idiomas": [
+      {
+        "idioma": "Inglés",
+        "nivel": "Avanzado"
+      },
+      {
+        "idioma": "Francés",
+        "nivel": "Intermedio"
+      }
+    ],
+    "habilidades": [
+      "Programación en Python, Java, y C++",
+      "Gestíon de proyectos ágiles",
+      "Análisis de datos con herramientas de visualización"
+    ],
+    "datos_interes": [
+      "Aficionado al ajedrez.",
+      "Participante en maratones de código.",
+      "Voluntario en organizaciones de enseñanza de tecnología."
+    ]
+  }
