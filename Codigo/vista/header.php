@@ -30,7 +30,6 @@ if($nombreArchivo == 'index.php') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -88,14 +87,9 @@ if($nombreArchivo == 'index.php') {
                 
                 <?php if ($is_logged_in): ?>
                     <ul class="navbar-nav ms-auto">
-                        <?php if ($role == 'admin' && $admin_id == 0): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Trabajo_final_SOA/Codigo/vista/admin/registroAdminForm.php">Crear admin</a>
-                            </li>
-                        <?php endif; ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <?php echo htmlspecialchars($usuario_nombre); ?>
+                                <p class="card-text">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?> </p>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="/Trabajo_final_SOA/Codigo/vista/configuracionForm.php">Configuración</a></li>
