@@ -14,7 +14,7 @@ if(isset($_SESSION["usuario"]) && isset($_SESSION["token"]) ){
             // Leer el contenido del archivo
             $contenidoArchivo = file_get_contents($archivoTmp);
     
-            // Preparar los datos para enviar al servidor
+            // Preparar los datos para enviar al servidor 
             $data = array(
                 'funcion' => 'subirFichero',
                 'nombreArchivo' => $nombreArchivo,

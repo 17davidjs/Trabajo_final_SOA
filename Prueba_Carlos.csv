@@ -1,0 +1,21 @@
+tabla,telefono,correo_electronico,paginaweb
+contacto,"123456789","usuario@example.com","https://usuario.com"
+
+tabla,titulo,institucion,fecha
+educacion,"Licenciatura en Informática","Universidad Nacional","2015-06-15"
+educacion,"Maestría en Ciencia de Datos","Universidad de Ciencias Aplicadas","2018-11-20"
+
+tabla,puesto,empresa,fecha_inicio,fecha_fin,descripcion
+experiencia_laboral,"Desarrollador Backend","Tech Solutions","2016-01-01","2018-12-31","Desarrollo de APIs REST y mantenimiento de bases de datos."
+experiencia_laboral,"Ingeniero de Software","Innovative Tech","2019-01-01","2023-06-30","Liderazgo de proyectos de desarrollo de software y mentoría de equipos."
+
+tabla,habilidad
+habilidades,"PHP"
+habilidades,"MySQL"
+habilidades,"JavaScript"
+habilidades,"Python"
+habilidades,"Gestión de Proyectos"
+
+tabla,idioma,nivel
+idiomas,"Inglés","Avanzado"
+idiomas,"Francés","Intermedio"

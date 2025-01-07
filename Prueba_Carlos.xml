@@ -1,0 +1,52 @@
+<datos>
+  <contacto>
+    <telefono>123456789</telefono>
+    <correo_electronico>usuario@example.com</correo_electronico>
+    <paginaweb>https://usuario.com</paginaweb>
+  </contacto>
+  <educacion>
+    <item>
+      <titulo>Licenciatura en Informática</titulo>
+      <institucion>Universidad Nacional</institucion>
+      <fecha>2015-06-15</fecha>
+    </item>
+    <item>
+      <titulo>Maestría en Ciencia de Datos</titulo>
+      <institucion>Universidad de Ciencias Aplicadas</institucion>
+      <fecha>2018-11-20</fecha>
+    </item>
+  </educacion>
+  <experiencia_laboral>
+    <item>
+      <puesto>Desarrollador Backend</puesto>
+      <empresa>Tech Solutions</empresa>
+      <fecha_inicio>2016-01-01</fecha_inicio>
+      <fecha_fin>2018-12-31</fecha_fin>
+      <descripcion>Desarrollo de APIs REST y mantenimiento de bases de datos.</descripcion>
+    </item>
+    <item>
+      <puesto>Ingeniero de Software</puesto>
+      <empresa>Innovative Tech</empresa>
+      <fecha_inicio>2019-01-01</fecha_inicio>
+      <fecha_fin>2023-06-30</fecha_fin>
+      <descripcion>Liderazgo de proyectos de desarrollo de software y mentoría de equipos.</descripcion>
+    </item>
+  </experiencia_laboral>
+  <habilidades>
+    <habilidad>PHP</habilidad>
+    <habilidad>MySQL</habilidad>
+    <habilidad>JavaScript</habilidad>
+    <habilidad>Python</habilidad>
+    <habilidad>Gestión de Proyectos</habilidad>
+  </habilidades>
+  <idiomas>
+    <idioma>
+      <nombre>Inglés</nombre>
+      <nivel>Avanzado</nivel>
+    </idioma>
+    <idioma>
+      <nombre>Francés</nombre>
+      <nivel>Intermedio</nivel>
+    </idioma>
+  </idiomas>
+</datos>

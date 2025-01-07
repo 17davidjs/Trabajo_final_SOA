@@ -1,0 +1,52 @@
+{
+  "contacto": {
+    "telefono": "123456789",
+    "correo_electronico": "usuario@example.com",
+    "peginaweb": "https://usuario.com"
+  },
+  "educacion": [
+    {
+      "titulo": "Licenciatura en Informática",
+      "institucion": "Universidad Nacional",
+      "fecha": "2015-06-15"
+    },
+    {
+      "titulo": "Maestría en Ciencia de Datos",
+      "institucion": "Universidad de Ciencias Aplicadas",
+      "fecha": "2018-11-20"
+    }
+  ],
+  "experiencia_laboral": [
+    {
+      "puesto": "Desarrollador Backend",
+      "empresa": "Tech Solutions",
+      "fecha_inicio": "2016-01-01",
+      "fecha_fin": "2018-12-31",
+      "descripcion": "Desarrollo de APIs REST y mantenimiento de bases de datos."
+    },
+    {
+      "puesto": "Ingeniero de Software",
+      "empresa": "Innovative Tech",
+      "fecha_inicio": "2019-01-01",
+      "fecha_fin": "2023-06-30",
+      "descripcion": "Liderazgo de proyectos de desarrollo de software y mentoría de equipos."
+    }
+  ],
+  "habilidades": [
+    "PHP",
+    "MySQL",
+    "JavaScript",
+    "Python",
+    "Gestión de Proyectos"
+  ],
+  "idiomas": [
+    {
+      "idioma": "Inglés",
+      "nivel": "Avanzado"
+    },
+    {
+      "idioma": "Francés",
+      "nivel": "Intermedio"
+    }
+  ]
+}
