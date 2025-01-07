@@ -23,17 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         exit;
     }
 }
-else
-{
-    $id = $_SESSION['id'] ?? null;
+
+
+if (isset($_SESSION['id'])){
+    $id = $_SESSION['id'];
 
     if (!$id)
     {
         header("Location: ../index.php");
         exit;
     }
-    
-    $usuario = $configurador->obtenerusuario($id);
+    else $usuario = $configurador->obtenerusuario($id);
 
     if (!$usuario)
     {

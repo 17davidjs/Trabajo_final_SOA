@@ -85,9 +85,14 @@ if($nombreArchivo == 'index.php') {
                 
                 <?php if ($is_logged_in): ?>
                     <ul class="navbar-nav ms-auto">
+                        <?php if ($role == 'admin'): ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/usuarios/index_usuarios.php">Administrar usuarios</a>
+                            </li>
+                        <?php endif; ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <p class="card-text">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?> </p>
+                            <a class="nav-link dropdown-toggle d-flex justify-content-between align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span><?php echo htmlspecialchars($_SESSION['usuario']); ?> </span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="/Trabajo_final_SOA/Codigo/vista/configuracionForm.php">Configuración</a></li>
@@ -96,6 +101,7 @@ if($nombreArchivo == 'index.php') {
                             </ul>
                         </li>
                     </ul>
+
                 <?php endif; ?>
             </div>
         </div>

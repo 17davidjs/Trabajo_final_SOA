@@ -60,6 +60,7 @@ class configuracion
                 throw new Exception("Usuario no encontrado");
             }
         }
+        
         catch (Exception $e)
         {
             echo "Error: " . $e->getMessage();

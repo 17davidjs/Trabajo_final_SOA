@@ -20,6 +20,7 @@
                     <p class="card-text">
                         Una herramienta avanzada para crear, editar y validar currículums de forma eficiente y profesional. 
                         ¡Empiece hoy mismo y optimice su gestión de currículums!
+                        <?php //echo "Id de la sesión: " . $_SESSION['id']; ?>
                     </p>
                 </div>
             </div>
