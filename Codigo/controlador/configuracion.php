@@ -44,12 +44,12 @@ class configuracion
     }
 
 
-    // Obtener usuario por ID (utiliza obtenerUserById del servidor.php)
+    // Obtener usuario por ID (utiliza getUserById del servidor.php)
     public function obtenerusuario($id)
     {
         try
         {
-            $response = $this->callAPI(['funcion' => 'obtenerUserById', 'id' => $id]);
+            $response = $this->callAPI(['funcion' => 'getUserById', 'id' => $id]);
 
             if (isset($response[0]))
             {
