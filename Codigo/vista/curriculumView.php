@@ -1,5 +1,5 @@
 <?php 
-require_once('config_admin.php');
+include 'header.php'; 
 ?>
 
 

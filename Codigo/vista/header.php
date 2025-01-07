@@ -71,11 +71,9 @@ if($nombreArchivo == 'index.php') {
                             <a class="nav-link <?php echo $current_page == 'registroForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/registroForm.php">Registro</a>
                         </li>
                     <?php else: ?>
-                        <?php if ($role == 'admin'): ?>
-                            <li class="nav-item">
-                                <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/admin/curriculumView.php">Gestión de Currículums</a>
-                            </li>
-                        <?php endif; ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumView.php">Gestión de Currículums</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Ver mis currículums</a>
                         </li>
