@@ -720,7 +720,7 @@ function procesarCSV($datos,$usuario) {
     $stmt->close();
 
     // Insertar en `formacion_academica`
-    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_inicio, fecha_fin) 
+    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_fin) 
             VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     foreach ($formacion_academica as $formacion) {
@@ -729,7 +729,6 @@ function procesarCSV($datos,$usuario) {
             $curriculumID,
             $formacion['titulo'],
             $formacion['institucion'],
-            $formacion['fecha_inicio'],
             $formacion['fecha_fin']
         );
         $stmt->execute();
@@ -830,8 +829,8 @@ function procesarJSON($datos,$usuario) {
     $stmt->close();
 
     // Insertar en `formacion_academica`
-    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_inicio, fecha_fin) 
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion,  fecha_fin) 
+            VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     foreach ($formacion_academica as $formacion) {
         $stmt->bind_param(
@@ -839,7 +838,6 @@ function procesarJSON($datos,$usuario) {
             $curriculumID,
             $formacion['titulo'],
             $formacion['institucion'],
-            $formacion['fecha_inicio'],
             $formacion['fecha_fin']
         );
         $stmt->execute();
@@ -941,8 +939,8 @@ function procesarXML($datos, $usuario) {
     $stmt->close();
 
     // Insertar en `formacion_academica`
-    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_inicio, fecha_fin) 
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO formacion_academica (curriculum_id, titulo, institucion, fecha_fin) 
+            VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     foreach ($formacion_academica as $formacion) {
         $stmt->bind_param(
@@ -950,7 +948,6 @@ function procesarXML($datos, $usuario) {
             $curriculumID,
             (string)$formacion->titulo,
             (string)$formacion->institucion,
-            (string)$formacion->fecha_inicio,
             (string)$formacion->fecha_fin
         );
         $stmt->execute();
