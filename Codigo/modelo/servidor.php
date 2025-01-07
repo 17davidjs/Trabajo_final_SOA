@@ -322,6 +322,7 @@ function cambiarContrasena($datos)
     }
 
     // Verificar contraseña actual
+    $hash = '';
     $stmt = $conn->prepare("SELECT contrasena FROM usuarios WHERE usuario = ?");
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
