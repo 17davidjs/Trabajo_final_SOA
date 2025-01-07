@@ -88,5 +88,5 @@ $curriculums = callAPI($data);
 
 
 // Incluir la vista y pasar los currículums
-include '../vista/curriculumView.php';
+include '../vista/curriculumForm.php';
 ?>

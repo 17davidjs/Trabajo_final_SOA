@@ -23,7 +23,7 @@ if($nombreArchivo == 'index.php') {
   $paginaActual = 'Subir currículums';
 } else if($nombreArchivo == 'eliminarUserForm.php') {
   $paginaActual = 'Configuración';
-} else if($nombreArchivo == 'curriculumView.php') {
+} else if($nombreArchivo == 'curriculumForm.php') {
   $paginaActual = 'Gestión de Currículums';
 } else {
   $paginaActual = '';
@@ -72,7 +72,7 @@ if($nombreArchivo == 'index.php') {
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumView.php">Crear currículum</a>
+                            <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumForm.php">Crear currículum</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Ver mis currículums</a>

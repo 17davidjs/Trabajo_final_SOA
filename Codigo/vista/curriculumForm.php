@@ -36,8 +36,8 @@ include 'header.php';
                     <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento">
                 </div>
                 <div class="mb-3">
-                    <label for="info" class="form-label">Acerca de mí</label>
-                    <textarea class="form-control" id="info" name="info" rows="5"></textarea>
+                    <label for="datos_interes" class="form-label">Datos de interes</label>
+                    <textarea class="form-control" id="datos_interes" name="datos_interes" rows="5"></textarea>
                 </div>
             </div>
         </div>
@@ -61,8 +61,6 @@ include 'header.php';
                         <input type="text" class="form-control" id="paginaweb" name="paginaweb[]">
                     </div>
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="addContacto1()">Añadir otro teléfono</button>
-                <button type="button" class="btn btn-secondary" onclick="addContacto2()">Añadir otro correo electrónico</button>
 
                 <h2>Formación académica</h2>
                 <div id="educacion-container">
@@ -80,6 +78,18 @@ include 'header.php';
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="addEducacion()">Añadir más educación</button>
+                
+                <h2>Idiomas</h2>
+                <div id="idiomas-container">
+                    <div class="mb-3">
+                        <label for="Idioma" class="form-label">Idioma</label>
+                        <input type="text" class="form-control" name="Idioma[]">
+                        <label for="nivel" class="form-label">Nivel</label>
+                        <input type="text" class="form-control" name="nivel[]">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addIdioma()">Añadir más idiomas</button>
+
             </div>
 
             <!-- Columna derecha -->
@@ -108,7 +118,19 @@ include 'header.php';
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="addExperiencia()">Añadir más experiencia laboral</button>
+
+                <h2>Conocimientos</h2>
+                <div id="contacto-container">
+                    <div class="mb-3">
+                        <label for="habilidades" class="form-label">Habilidades</label>
+                        <input type="text" class="form-control" id="habilidades" name="habilidades[]">
+                    </div>
+
+                </div>
+
             </div>
+
+            
         </div>
 
         <!-- Botones de acción -->
@@ -122,6 +144,7 @@ include 'header.php';
 </main>
 </body>
 </html>
+
 
 <script>
 function previewImage(event) {
@@ -138,46 +161,22 @@ function previewImage(event) {
     }
 }
 
-function addContacto1() {
-    const container = document.getElementById('contacto-container');
-    const newContacto = document.createElement('div');
-    newContacto.className = 'mb-3';
-    newContacto.innerHTML = `
-        <label for="telefono" class="form-label">Teléfono</label>
-        <input type="text" class="form-control" name="telefono[]">
-        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this)">Eliminar</button>
-    `;
-    container.appendChild(newContacto);
-}
-
-function addContacto2() {
-    const container = document.getElementById('contacto-container');
-    const newContacto = document.createElement('div');
-    newContacto.className = 'mb-3';
-    newContacto.innerHTML = `
-        <label for="correo_electronico" class="form-label">Correo Electrónico</label>
-        <input type="email" class="form-control" name="correo_electronico[]">
-        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this)">Eliminar</button>
-    `;
-    container.appendChild(newContacto);
-}
-
 function addExperiencia() {
     const container = document.getElementById('experiencia-container');
     const newExperiencia = document.createElement('div');
-    newExperiencia.className = 'mb-3';
+    newExperiencia.className = 'mb-3 bg-light';
     newExperiencia.innerHTML = `
         <label for="puesto" class="form-label">Puesto</label>
-        <input type="text" class="form-control" name="puesto[]">
+        <input type="text" class="form-control bg-light" name="puesto[]">
         <label for="empresa" class="form-label">Empresa</label>
-        <input type="text" class="form-control" name="empresa[]">
+        <input type="text" class="form-control bg-light" name="empresa[]">
         <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
-        <input type="date" class="form-control" name="fecha_inicio[]">
+        <input type="date" class="form-control bg-light" name="fecha_inicio[]">
         <label for="fecha_fin" class="form-label">Fecha de Fin</label>
-        <input type="date" class="form-control" name="fecha_fin[]">
+        <input type="date" class="form-control bg-light" name="fecha_fin[]">
         <label for="descripcion" class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion[]" rows="3"></textarea>
-        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this)">Eliminar</button>
+        <textarea class="form-control bg-light" name="descripcion[]" rows="3"></textarea>
+        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this, 'experiencia-container')">Eliminar</button>
     `;
     container.appendChild(newExperiencia);
 }
@@ -185,20 +184,35 @@ function addExperiencia() {
 function addEducacion() {
     const container = document.getElementById('educacion-container');
     const newEducacion = document.createElement('div');
-    newEducacion.className = 'mb-3';
+    newEducacion.className = 'mb-3 bg-light';
     newEducacion.innerHTML = `
         <label for="titulo" class="form-label">Título</label>
-        <input type="text" class="form-control" name="titulo[]">
+        <input type="text" class="form-control bg-light" name="titulo[]">
         <label for="institucion" class="form-label">Institución</label>
-        <input type="text" class="form-control" name="institucion[]">
+        <input type="text" class="form-control bg-light" name="institucion[]">
         <label for="fecha" class="form-label">Fecha</label>
-        <input type="text" class="form-control" name="fecha[]">
-        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this)">Eliminar</button>
+        <input type="text" class="form-control bg-light" name="fecha[]">
+        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this, 'educacion-container')">Eliminar</button>
     `;
     container.appendChild(newEducacion);
 }
 
-function removeField(button) {
+function addIdioma() {
+    const container = document.getElementById('idiomas-container');
+    const newIdioma = document.createElement('div');
+    newIdioma.className = 'mb-3 bg-light';
+    newIdioma.innerHTML = `
+        <label for="Idioma" class="form-label">Idioma</label>
+        <input type="text" class="form-control bg-light" name="Idioma[]">
+        <label for="nivel" class="form-label">Nivel</label>
+        <input type="text" class="form-control bg-light" name="nivel[]">
+        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeField(this, 'idiomas-container')">Eliminar</button>
+    `;
+    container.appendChild(newIdioma);
+}
+
+function removeField(button, containerId) {
     button.parentElement.remove();
+    saveData(containerId);
 }
 </script>
