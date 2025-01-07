@@ -107,6 +107,7 @@ include 'header.php';
                     </div>
                 </div>
             </div>
+            <a href="editarCVForm.php?cv_id=<?php echo $cv_id; ?>" class="btn btn-sm btn-info">Editar</a>
         </div>
 
         <?php
