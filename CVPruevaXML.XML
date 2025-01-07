@@ -2,8 +2,8 @@
   <nombre>Juan</nombre>
   <apellidos>Pérez Gómez</apellidos>
   <fecha_nacimiento>1990-05-15</fecha_nacimiento>
-  <telefono>123456789</telefono>
-  <correo>juan.perez@example.com</correo_electronico>
+  <telefonos>123456789</telefono>
+  <correos>juan.perez@example.com</correo_electronico>
   <pagina_web>https://juanperez.com</pagina_web>
   <imagen_path>/images/juan_perez.jpg</imagen_path>
   <formacion_academica>
