@@ -14,7 +14,6 @@ class MYPDF extends TCPDF {
         $this->SetXY(50, 10);
         $this->Cell(0, 10, htmlspecialchars($_POST['nombre'] . ' ' . $_POST['apellidos']), 0, 1, 'L', 0, '', 1);
 
-
         // Foto del usuario
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
             $imgPath = $_FILES['imagen']['tmp_name'];
@@ -70,8 +69,6 @@ if (!empty($_POST['paginaweb'])) {
     $html .= '</ul>';
 }
 
-
-
 // Educación
 $html .= '<h2 style="color: #394a7a;">Educación</h2>';
 if (!empty($_POST['titulo'])) {
@@ -81,12 +78,20 @@ if (!empty($_POST['titulo'])) {
     }
 }
 
+// Idiomas
+$html .= '<h2 style="color: #394a7a;">Idiomas</h2>';
+if (!empty($_POST['Idioma'])) {
+    foreach ($_POST['Idioma'] as $index => $idioma) {
+        $html .= '<p><strong>' . htmlspecialchars($idioma) . '</strong>: ' . htmlspecialchars($_POST['nivel'][$index]) . '</p>';
+    }
+}
+
 $html .= '</td>';
 $html .= '<td style="width: 65%; vertical-align: top;">';
 
 // Acerca de mí
 $html .= '<h2 style="color: #394a7a;">Acerca de mí</h2>';
-$html .= '<p>' . nl2br(htmlspecialchars($_POST['info'])) . '</p>';
+$html .= '<p>' . nl2br(htmlspecialchars($_POST['datos_interes'])) . '</p>';
 
 // Experiencia laboral
 $html .= '<h2 style="color: #394a7a;">Experiencia Laboral</h2>';
