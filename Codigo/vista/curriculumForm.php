@@ -6,7 +6,7 @@ include 'header.php';
 <main class="container my-5">
     <h1 class="text-center">Formulario de Currículum</h1>
 
-    <form id="curriculumForm" action="../controlador/curriculumController.php" method="POST" enctype="multipart/form-data">
+    <form id="curriculumForm" action="../controlador/subir.php" method="POST" enctype="multipart/form-data">
 
         <input type="hidden" name="action" value="add">
 
