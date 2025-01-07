@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Teléfono:</label>
-                    <input type="tel" class="form-control" name="telefono" pattern="[0-9]{10}" required title="Introduzca su número de teléfono">
+                    <input type="tel" class="form-control" name="telefono" required title="Introduzca su número de teléfono">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Usuario:</label>
