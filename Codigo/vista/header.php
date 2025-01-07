@@ -35,7 +35,7 @@ if($nombreArchivo == 'index.php') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $paginaActual; ?> - Sistema de Gestión de Currículums</title>
+    <title><?php echo $paginaActual; ?>Sistema de Gestión de Currículums</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .dropdown:hover .dropdown-menu {
@@ -65,14 +65,14 @@ if($nombreArchivo == 'index.php') {
                     </li>
                     <?php if (!$is_logged_in): ?>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $current_page == 'loginForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Login</a>
+                            <a class="nav-link <?php echo $current_page == 'loginForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/loginForm.php">Acceso</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $current_page == 'registroForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/registroForm.php">Registro</a>
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumView.php">Gestión de Currículums</a>
+                            <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/curriculumView.php">Crear currículum</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?php echo $current_page == 'vercvForm.php' ? 'active' : ''; ?>" href="/Trabajo_final_SOA/Codigo/vista/vercvForm.php">Ver mis currículums</a>
