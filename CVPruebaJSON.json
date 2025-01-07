@@ -1,0 +1,72 @@
+{
+    "nombre": "Juan",
+    "apellidos": "Pérez Gómez",
+    "fecha_nacimiento": "1990-05-15",
+    "direccion": "Calle Falsa 123, Ciudad de México, México",
+    "correo_electronico": "juan.perez@example.com",
+    "telefono": "+52 555 123 4567",
+    "formacion_academica": [
+      {
+        "titulo": "Licenciatura en Ingeniería en Sistemas",
+        "institucion": "Universidad Nacional Autónoma de México",
+        "fecha_inicio": "2008-08",
+        "fecha_fin": "2012-05"
+      },
+      {
+        "titulo": "Maestría en Ciencias de la Computación",
+        "institucion": "Instituto Tecnológico de Estudios Superiores de Monterrey",
+        "fecha_inicio": "2013-01",
+        "fecha_fin": "2015-12"
+      }
+    ],
+    "experiencia_laboral": [
+      {
+        "puesto": "Desarrollador de Software",
+        "empresa": "Tech Solutions S.A.",
+        "fecha_inicio": "2016-01",
+        "fecha_fin": "2019-12",
+        "responsabilidades": [
+          "Desarrollo de aplicaciones web.",
+          "Mantenimiento de sistemas existentes.",
+          "Colaboración en equipos ágiles."
+        ]
+      },
+      {
+        "puesto": "Ingeniero de Datos",
+        "empresa": "DataCorp",
+        "fecha_inicio": "2020-01",
+        "fecha_fin": "2023-06",
+        "responsabilidades": [
+          "Diseño e implementación de pipelines de datos.",
+          "Optimización de bases de datos.",
+          "Generación de reportes analíticos."
+        ]
+      }
+    ],
+    "idiomas": [
+      {
+        "idioma": "Español",
+        "nivel": "Nativo"
+      },
+      {
+        "idioma": "Inglés",
+        "nivel": "Avanzado"
+      },
+      {
+        "idioma": "Francés",
+        "nivel": "Intermedio"
+      }
+    ],
+    "habilidades": [
+      "Programación en Python, Java y PHP",
+      "Manejo de bases de datos SQL y NoSQL",
+      "Trabajo en equipo y liderazgo",
+      "Resolución de problemas"
+    ],
+    "datos_interes": [
+      "Interés por la inteligencia artificial y el aprendizaje automático.",
+      "Aficionado al ajedrez y deportes al aire libre.",
+      "Voluntario en proyectos de inclusión tecnológica."
+    ]
+  }
+    

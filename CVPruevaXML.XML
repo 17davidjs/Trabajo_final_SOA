@@ -1,0 +1,71 @@
+﻿<curriculum>
+  <nombre>Juan</nombre>
+  <apellidos>Pérez Gómez</apellidos>
+  <fecha_nacimiento>1990-05-15</fecha_nacimiento>
+  <direccion>Calle Falsa 123, Ciudad de México, México</direccion>
+  <correo_electronico>juan.perez@example.com</correo_electronico>
+  <telefono>+52 555 123 4567</telefono>
+  <formacion_academica>
+    <estudio>
+      <titulo>Licenciatura en Ingeniería en Sistemas</titulo>
+      <institucion>Universidad Nacional Autónoma de México</institucion>
+      <fecha_inicio>2008-08</fecha_inicio>
+      <fecha_fin>2012-05</fecha_fin>
+    </estudio>
+    <estudio>
+      <titulo>Maestría en Ciencias de la Computación</titulo>
+      <institucion>Instituto Tecnológico de Estudios Superiores de Monterrey</institucion>
+      <fecha_inicio>2013-01</fecha_inicio>
+      <fecha_fin>2015-12</fecha_fin>
+    </estudio>
+  </formacion_academica>
+  <experiencia_laboral>
+    <trabajo>
+      <puesto>Desarrollador de Software</puesto>
+      <empresa>Tech Solutions S.A.</empresa>
+      <fecha_inicio>2016-01</fecha_inicio>
+      <fecha_fin>2019-12</fecha_fin>
+      <responsabilidades>
+        <responsabilidad>Desarrollo de aplicaciones web.</responsabilidad>
+        <responsabilidad>Mantenimiento de sistemas existentes.</responsabilidad>
+        <responsabilidad>Colaboración en equipos ágiles.</responsabilidad>
+      </responsabilidades>
+    </trabajo>
+    <trabajo>
+      <puesto>Ingeniero de Datos</puesto>
+      <empresa>DataCorp</empresa>
+      <fecha_inicio>2020-01</fecha_inicio>
+      <fecha_fin>2023-06</fecha_fin>
+      <responsabilidades>
+        <responsabilidad>Diseño e implementación de pipelines de datos.</responsabilidad>
+        <responsabilidad>Optimización de bases de datos.</responsabilidad>
+        <responsabilidad>Generación de reportes analíticos.</responsabilidad>
+      </responsabilidades>
+    </trabajo>
+  </experiencia_laboral>
+  <idiomas>
+    <idioma>
+      <nombre>Español</nombre>
+      <nivel>Nativo</nivel>
+    </idioma>
+    <idioma>
+      <nombre>Inglés</nombre>
+      <nivel>Avanzado</nivel>
+    </idioma>
+    <idioma>
+      <nombre>Francés</nombre>
+      <nivel>Intermedio</nivel>
+    </idioma>
+  </idiomas>
+  <habilidades>
+    <habilidad>Programación en Python, Java y PHP</habilidad>
+    <habilidad>Manejo de bases de datos SQL y NoSQL</habilidad>
+    <habilidad>Trabajo en equipo y liderazgo</habilidad>
+    <habilidad>Resolución de problemas</habilidad>
+  </habilidades>
+  <datos_interes>
+    <dato>Interés por la inteligencia artificial y el aprendizaje automático.</dato>
+    <dato>Aficionado al ajedrez y deportes al aire libre.</dato>
+    <dato>Voluntario en proyectos de inclusión tecnológica.</dato>
+  </datos_interes>
+</curriculum>
