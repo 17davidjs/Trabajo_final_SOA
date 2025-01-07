@@ -6,6 +6,7 @@ $cv_id = $_GET['cv_id'];
 $query = "SELECT * FROM curriculums WHERE cv_id = $cv_id";
 $result = mysqli_query($conn, $query);
 $cv = mysqli_fetch_assoc($result);
+$id_usuario = $_SESSION['id'];
 
 ?>
 
@@ -16,47 +17,60 @@ $cv = mysqli_fetch_assoc($result);
         <input type="hidden" name="cv_id" value="<?php echo $cv_id; ?>">
 
         <!-- Datos personales -->
-<div class="row mb-4">
-    <h2>Datos personales</h2>
-    <div id="contacto-container">
-        <!-- Cargar datos de contacto -->
-        <?php
-        $contacto_query = "SELECT * FROM contacto WHERE usuario_id = $_SESSION['usuario']";
-        $contacto_result = mysqli_query($conn, $contacto_query);
-        while ($contacto = mysqli_fetch_assoc($contacto_result)) {
-            echo '<div class="col-md-3 text-center mb-3">';
-            echo '<label for="imagen" class="form-label">Subir Imagen</label>';
-            echo '<input type="file" class="form-control" id="imagen" name="imagen" onchange="previewImage(event)">';
-            echo '<div class="mb-3">';
-            echo '<img id="preview-img" class="img-fluid rounded" src="' . $contacto['imagen_path'] . '" alt="Vista previa de la imagen" style="display: block;">';
-            echo '</div>';
-            echo '</div>';
+        <div class="row mb-4">
+        <h2>Datos personales</h2>
+        <div id="contacto-container">
+            <!-- Cargar datos de contacto -->
+            <?php
+            // Asegúrate de que $cv_id esté definido correctamente
+            $contacto_query = "SELECT * FROM contacto WHERE cv_id = '$cv_id'";
+            $contacto_result = mysqli_query($conn, $contacto_query);
 
-            echo '<div class="col-md-9">';
-            echo '<div class="mb-3">';
-            echo '<label for="nombre" class="form-label">Nombre</label>';
-            echo '<input type="text" class="form-control" id="nombre" name="nombre" value="' . $contacto['nombre'] . '">';
-            echo '</div>';
+            // Obtén los datos del usuario
+            $usuario_query = "SELECT * FROM usuarios WHERE id = '$id_usuario'";
+            $usuario_result = mysqli_query($conn, $usuario_query);
 
-            echo '<div class="mb-3">';
-            echo '<label for="apellidos" class="form-label">Apellidos</label>';
-            echo '<input type="text" class="form-control" id="apellidos" name="apellidos" value="' . $contacto['apellidos'] . '">';
-            echo '</div>';
+            // Verifica que ambos resultados existan
+            if ($contacto_result && $usuario_result) {
+                $contacto = mysqli_fetch_assoc($contacto_result);
+                $usuario = mysqli_fetch_assoc($usuario_result);
+                
+                echo '<div class="col-md-3 text-center mb-3">';
+                echo '<label for="imagen" class="form-label">Subir Imagen</label>';
+                echo '<input type="file" class="form-control" id="imagen" name="imagen" onchange="previewImage(event)">';
+                echo '<div class="mb-3">';
+                echo '<img id="preview-img" class="img-fluid rounded" src="' . $contacto['imagen_path'] . '" alt="Vista previa de la imagen" style="display: block;">';
+                echo '</div>';
+                echo '</div>';
 
-            echo '<div class="mb-3">';
-            echo '<label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>';
-            echo '<input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="' . $contacto['fecha_nacimiento'] . '">';
-            echo '</div>';
+                echo '<div class="col-md-9">';
+                echo '<div class="mb-3">';
+                echo '<label for="nombre" class="form-label">Nombre</label>';
+                echo '<input type="text" class="form-control" id="nombre" name="nombre" value="' . htmlspecialchars($usuario['nombre']) . '">';
+                echo '</div>';
 
-            echo '<div class="mb-3">';
-            echo '<label for="datos_interes" class="form-label">Datos de interÃ©s</label>';
-            echo '<textarea class="form-control" id="datos_interes" name="datos_interes" rows="5">' . $contacto['datos_interes'] . '</textarea>';
-            echo '</div>';
+                echo '<div class="mb-3">';
+                echo '<label for="apellidos" class="form-label">Apellidos</label>';
+                echo '<input type="text" class="form-control" id="apellidos" name="apellidos" value="' . htmlspecialchars($usuario['apellidos']) . '">';
+                echo '</div>';
 
+                echo '<div class="mb-3">';
+                echo '<label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>';
+                echo '<input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="' . $usuario['fecha_nacimiento'] . '">';
+                echo '</div>';
+
+                echo '<div class="mb-3">';
+                echo '<label for="datos_interes" class="form-label">Datos de interés</label>';
+                echo '<textarea class="form-control" id="datos_interes" name="datos_interes" rows="5">' . htmlspecialchars($contacto['datos_interes']) . '</textarea>';
+                echo '</div>';
+                echo '</div>';
+            } else {
+                echo '<p>Error al cargar los datos del contacto o usuario.</p>';
             }
-        ?>
+            ?>
+        </div>
     </div>
-</div>
+
 
         <!-- Contenido dividido en columnas -->
         <div class="row">
@@ -162,7 +176,8 @@ $cv = mysqli_fetch_assoc($result);
 
         <!-- Botones de acción -->
         <div class="mt-4 text-center">
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <!--<button type="submit" class="btn btn-primary">Guardar Cambios</button>-->
+            <a href="vercvForm.php" class="btn btn-primary">Volver</a>
         </div>
     </form>
 </main>

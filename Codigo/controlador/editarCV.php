@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datos_interes = $_POST['datos_interes'];
 
     // Actualizar datos personales
-    $query = "UPDATE curriculums SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, datos_interes = ? WHERE cv_id = ?";
+    $query = "UPDATE curriculums SET datos_interes = ? WHERE cv_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ssssi", $nombre, $apellidos, $fecha_nacimiento, $datos_interes, $cv_id);
     $stmt->execute();
