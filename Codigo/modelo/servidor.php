@@ -740,88 +740,6 @@ function procesarJSON($contenido, $usuario) {
     if (isset($datos['contacto'])) {
         guardarContacto($datos['contacto'], $usuario);
     }
-<<<<<<< Updated upstream
-
-    $curriculumID = $conn->insert_id; // Obtener el ID del currículum recién insertado
-    $stmt->close();
-    $formacion_id="";
-    $experiencia_id="";
-    $idioma_id="";
-    $habilidad_id="";
-    $interes_id="";
-    $responsabilidad_id="";
-
-    // Insertar en `formacion_academica`
-    $sql = "INSERT INTO formacion ( titulo, centro, fecha_fin) 
-            VALUES ( ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    foreach ($formacion_academica as $formacion) {
-        $stmt->bind_param(
-            "ssss",
-            $formacion['titulo'],
-            $formacion['centro'],
-            $formacion['fecha_fin']
-        );
-        $stmt->execute();
-    }
-    $stmt->close();
-
-    // Insertar en `experiencia_laboral`
-    $sql = "INSERT INTO experiencias ( puesto, empresa, fecha_inicio, fecha_fin) 
-            VALUES ( ?, ?, ?, ?,)";
-    $stmt = $conn->prepare($sql);
-    foreach ($experiencia_laboral as $experiencia) {
-        $stmt->bind_param(
-            "ssss",
-            $experiencia['puesto'],
-            $experiencia['empresa'],
-            $experiencia['fecha_inicio'],
-            $experiencia['fecha_fin'],
-            
-        );
-        $stmt->execute();
-    }
-    $stmt->close();
-
-    // Insertar en `idiomas`
-    $sql = "INSERT INTO idiomas ( idioma, nivel) 
-            VALUES ( ?, ?)";
-    $stmt = $conn->prepare($sql);
-    foreach ($idiomas as $idioma) {
-        $stmt->bind_param("ss", $idioma['idioma'], $idioma['nivel']);
-        $stmt->execute();
-    }
-    $stmt->close();
-
-    // Insertar en `habilidades`
-    $sql = "INSERT INTO habilidades ( habilidad) 
-            VALUES ( ?)";
-    $stmt = $conn->prepare($sql);
-    foreach ($habilidades as $habilidad) {
-        $stmt->bind_param("s", $habilidad);
-        $stmt->execute();
-    }
-    $stmt->close();
-
-    // Insertar en `datos_interes`
-    $sql = "INSERT INTO intereses (interes) 
-            VALUES (?)";
-    $stmt = $conn->prepare($sql);
-    foreach ($datos_interes as $dato) {
-        $stmt->bind_param("s", $dato);
-        $stmt->execute();
-    }
-    $stmt->close();
-
-    // Insertar en `responsabilidad`
-    $sql = "INSERT INTO responsabilidad ( responsabilidad) 
-        VALUES ( ?)";
-    $stmt = $conn->prepare($sql);
-    foreach ($experiencia_laboral as $experiencia) {
-        foreach ($experiencia->responsabilidades as $responsabilidad) {
-        $stmt->bind_param("s", $responsabilidad);
-        $stmt->execute();
-=======
     if (isset($datos['educacion'])) {
         foreach ($datos['educacion'] as $educacion) {
             guardarEducacion($educacion, $usuario);
@@ -840,7 +758,6 @@ function procesarJSON($contenido, $usuario) {
     if (isset($datos['idiomas'])) {
         foreach ($datos['idiomas'] as $idioma) {
             guardarIdioma($idioma, $usuario);
->>>>>>> Stashed changes
         }
     }
 }
