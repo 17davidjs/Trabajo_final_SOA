@@ -25,8 +25,14 @@ include 'header.php';
                 $nombre = $usuario_data['nombre'];
                 $apellidos = $usuario_data['apellidos'];
                 $fecha_nacimiento = $usuario_data['fecha_nacimiento'];
-                $datos_interes = $usuario_data['datos_interes'];
-                $imagen_path = $usuario_data['imagen_path'];
+
+
+                $contacto_query = "SELECT * FROM contacto WHERE cv_id = $cv_id";
+                $contacto_result = mysqli_query($conn, $contacto_query);
+                $contacto_data = mysqli_fetch_assoc($contacto_result);
+                
+                $datos_interes = $contacto_data['datos_interes'];
+                $imagen_path = $contacto_data['imagen_path'];
         ?>
 
         <div class="card my-4">
@@ -49,8 +55,6 @@ include 'header.php';
                         <h4>Contacto</h4>
                         <ul>
                             <?php
-                            $contacto_query = "SELECT * FROM contacto WHERE cv_id = $cv_id";
-                            $contacto_result = mysqli_query($conn, $contacto_query);
                             while ($contacto = mysqli_fetch_assoc($contacto_result)) {
                                 echo "<li>Teléfono: {$contacto['telefono']}, Correo: {$contacto['correo_electronico']}, Página web: {$contacto['paginaweb']}</li>";
                             }

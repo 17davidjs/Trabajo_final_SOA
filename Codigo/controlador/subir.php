@@ -30,8 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($_POST['telefono'] as $index => $telefono) {
             $correo = $_POST['correo_electronico'][$index];
             $paginaweb = $_POST['paginaweb'][$index];
-            $query = "INSERT INTO contacto (cv_id, telefono, correo_electronico, paginaweb) 
-                      VALUES ($cv_id, '$telefono', '$correo', '$paginaweb')";
+            $datos_interes = $_POST['datos_interes'];
+            $query = "INSERT INTO contacto (cv_id, telefono, correo_electronico, paginaweb, datos_interes, imagen_path) 
+                      VALUES ($cv_id, '$telefono', '$correo', '$paginaweb', '$datos_interes', '$imagen_path')";
             mysqli_query($conn, $query);
         }
     }
