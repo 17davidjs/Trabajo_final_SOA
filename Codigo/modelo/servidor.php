@@ -94,9 +94,6 @@ switch ($datos["funcion"]) {
     case "subirFichero":
         subir($datos);
         break;
-    case "addCurriculum":
-        addCurriculum($datos);
-        break;
     case "cambiarContrasena":
         cambiarContrasena($datos);
         break;
@@ -610,7 +607,7 @@ function procesarCSV($contenido, $cv_id) {
                         guardarEducacionCSV($datos, $cv_id);
                         break;
                     case "experiencia_laboral":
-                        guardarExperienciaLaboralCSV($dato, $cv_id);
+                        guardarExperienciaLaboralCSV($datos, $cv_id);
                         break;
                     case "habilidades":
                         // Procesar habilidades, las cuales son solo un listado

@@ -6,7 +6,7 @@ include 'header.php';
 <main class="container my-5">
     <h1 class="text-center">Formulario de Currículum</h1>
 
-    <form id="curriculumForm" action="../controlador/subir.php" method="POST" enctype="multipart/form-data">
+    <form id="curriculumForm" action="../controlador/curriculumController.php" method="POST" enctype="multipart/form-data">
 
         <input type="hidden" name="action" value="add">
 
@@ -25,15 +25,15 @@ include 'header.php';
             <div class="col-md-9">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre">
                 </div>
                 <div class="mb-3">
                     <label for="apellidos" class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                    <input type="text" class="form-control" id="apellidos" name="apellidos">
                 </div>
                 <div class="mb-3">
                     <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento">
                 </div>
                 <div class="mb-3">
                     <label for="datos_interes" class="form-label">Datos de interes</label>
@@ -50,11 +50,11 @@ include 'header.php';
                 <div id="contacto-container">
                     <div class="mb-3">
                         <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono[]" required>
+                        <input type="text" class="form-control" id="telefono" name="telefono[]">
                     </div>
                     <div class="mb-3">
                         <label for="correo_electronico" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="correo_electronico" name="correo_electronico[]" required>
+                        <input type="email" class="form-control" id="correo_electronico" name="correo_electronico[]">
                     </div>
                     <div class="mb-3">
                         <label for="paginaweb" class="form-label">Página WEB</label>
@@ -131,13 +131,13 @@ include 'header.php';
             </div>
 
             
-        </div> 
+        </div>
 
         <!-- Botones de acción -->
         <div class="mt-4 text-center">
-            <button type="submit" class="btn btn-primary" name="crearCV">Crear</button>
+            <button type="submit" class="btn btn-primary">Crear</button>
             <button type="submit" formaction="/Trabajo_final_SOA/Codigo/controlador/generate_pdf.php" class="btn btn-success">Generar PDF</button>
-            <button type="submit" formaction="vercvForm.php" class="btn btn-success">Ver</button>
+            <button type="submit" formaction="../vercvForm.php" class="btn btn-success">Ver</button>
 
         </div>
     </form>
