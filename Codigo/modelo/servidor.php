@@ -1308,12 +1308,12 @@ function procesarXML($datos, $usuario) {
     $stmt->bind_param("ii", $curriculumID, $idioma_id);
     $stmt->execute();
 
-    $sql ="INSERT INTO cv_intereses (id_curriculum, id_interese) VALUES (?, ?)";
+    $sql ="INSERT INTO cv_intereses (id_curriculum, id_interes) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $curriculumID, $interes_id);
     $stmt->execute();
 
-    $sql ="INSERT INTO experiencia_responsabilidades (id_experienca, id_responsabilidad) VALUES (?, ?)";
+    $sql ="INSERT INTO experiencia_responsabilidades (id_experiencia, id_responsabilidad) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $experiencia_id, $responsabilidad_id);
     $stmt->execute();
