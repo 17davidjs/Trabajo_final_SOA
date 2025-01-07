@@ -1,127 +1,110 @@
 <?php
-require_once 'header.php';
-// Configuración de la base de datos
-$host = 'localhost';
-$user = 'root'; // Cambiar si es necesario
-$password = ''; // Cambiar si es necesario
-$dbname = 'soa_final';
-
-// Conexión a la base de datos
-$conn = new mysqli($host, $user, $password, $dbname);
-
-// Verificar la conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-
-// Recuperar el ID del currículum desde la URL (por ejemplo, ?id=1)
-$cvId = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
-// Consultar los datos del currículum
-$sql = "SELECT `id`, `nombre`, `apellidos`, `fecha_nacimiento`, `acerca_de`, `telefonos`, `correos`, `paginas_web`, `educacion`, `experiencia`, `imagen_path` FROM `cv` WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $cvId);
-$stmt->execute();
-$result = $stmt->get_result();
-$cv = $result->fetch_assoc();
-
-// Verificar si se encontraron datos
-if (!$cv) {
-    die("No se encontraron datos para el ID proporcionado.");
-}
-
-// Procesar los datos que están en formato JSON o texto separado
-$telefonos = !empty($cv['telefonos']) ? json_decode($cv['telefonos'], true) : [];
-$correos = !empty($cv['correos']) ? json_decode($cv['correos'], true) : [];
-$paginasWeb = !empty($cv['paginas_web']) ? json_decode($cv['paginas_web'], true) : [];
-$educacion = !empty($cv['educacion']) ? json_decode($cv['educacion'], true) : [];
-$experiencia = !empty($cv['experiencia']) ? json_decode($cv['experiencia'], true) : [];
+require_once '../config/db.php';
+include 'header.php'; 
 
 ?>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center">Currículums Guardados</h1>
 
-<main class="container my-5">
-    <h1 class="text-center">Currículum Vitae</h1>
+        <?php
+        $usuario = $_SESSION['id'];
+        // Consulta para obtener todos los usuarios
+        $query = "SELECT * FROM usuarios where id = $usuario";
+        $result = mysqli_query($conn, $query);
 
-    <!-- Datos personales -->
-    <div class="row mb-4">
-        <div class="col-md-3 text-center">
-            <div class="mb-3">
-                <?php if (!empty($cv['imagen_path'])): ?>
-                    <img src="<?php echo htmlspecialchars($cv['imagen_path']); ?>" class="img-fluid rounded" alt="Imagen de perfil">
-                <?php endif; ?>
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $usuario_id = $row['id'];
+                $nombre = $row['nombre'];
+                $apellidos = $row['apellidos'];
+                $fecha_nacimiento = $row['fecha_nacimiento'];
+                $datos_interes = $row['datos_interes'];
+                $imagen_path = $row['imagen_path'];
+        ?>
+
+        <div class="card my-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- Imagen del usuario -->
+                        <?php if ($imagen_path): ?>
+                            <img src="<?php echo $imagen_path; ?>" class="img-fluid rounded" alt="Foto de <?php echo $nombre; ?>">
+                        <?php else: ?>
+                            <img src="default-avatar.png" class="img-fluid rounded" alt="Sin imagen">
+                        <?php endif; ?>
+                    </div>
+                    <div class="col-md-9">
+                        <h3><?php echo $nombre . ' ' . $apellidos; ?></h3>
+                        <p><strong>Fecha de Nacimiento:</strong> <?php echo $fecha_nacimiento; ?></p>
+                        <p><strong>Datos de Interés:</strong> <?php echo nl2br($datos_interes); ?></p>
+                        
+                        <!-- Mostrar datos dinámicos -->
+                        <h4>Contacto</h4>
+                        <ul>
+                            <?php
+                            $contacto_query = "SELECT * FROM contacto WHERE usuario_id = $usuario_id";
+                            $contacto_result = mysqli_query($conn, $contacto_query);
+                            while ($contacto = mysqli_fetch_assoc($contacto_result)) {
+                                echo "<li>Teléfono: {$contacto['telefono']}, Correo: {$contacto['correo_electronico']}, Página web: {$contacto['paginaweb']}</li>";
+                            }
+                            ?>
+                        </ul>
+
+                        <h4>Formación Académica</h4>
+                        <ul>
+                            <?php
+                            $educacion_query = "SELECT * FROM educacion WHERE usuario_id = $usuario_id";
+                            $educacion_result = mysqli_query($conn, $educacion_query);
+                            while ($educacion = mysqli_fetch_assoc($educacion_result)) {
+                                echo "<li>Título: {$educacion['titulo']}, Institución: {$educacion['institucion']}, Fecha: {$educacion['fecha']}</li>";
+                            }
+                            ?>
+                        </ul>
+
+                        <h4>Idiomas</h4>
+                        <ul>
+                            <?php
+                            $idiomas_query = "SELECT * FROM idiomas WHERE usuario_id = $usuario_id";
+                            $idiomas_result = mysqli_query($conn, $idiomas_query);
+                            while ($idioma = mysqli_fetch_assoc($idiomas_result)) {
+                                echo "<li>{$idioma['idioma']} (Nivel: {$idioma['nivel']})</li>";
+                            }
+                            ?>
+                        </ul>
+
+                        <h4>Experiencia Laboral</h4>
+                        <ul>
+                            <?php
+                            $experiencia_query = "SELECT * FROM experiencia_laboral WHERE usuario_id = $usuario_id";
+                            $experiencia_result = mysqli_query($conn, $experiencia_query);
+                            while ($experiencia = mysqli_fetch_assoc($experiencia_result)) {
+                                echo "<li>Puesto: {$experiencia['puesto']}, Empresa: {$experiencia['empresa']}, Desde: {$experiencia['fecha_inicio']} hasta {$experiencia['fecha_fin']}. Descripción: {$experiencia['descripcion']}</li>";
+                            }
+                            ?>
+                        </ul>
+
+                        <h4>Habilidades</h4>
+                        <ul>
+                            <?php
+                            $habilidades_query = "SELECT * FROM habilidades WHERE usuario_id = $usuario_id";
+                            $habilidades_result = mysqli_query($conn, $habilidades_query);
+                            while ($habilidad = mysqli_fetch_assoc($habilidades_result)) {
+                                echo "<li>{$habilidad['habilidad']}</li>";
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-9">
-            <h2><?php echo htmlspecialchars($cv['nombre']) . ' ' . htmlspecialchars($cv['apellidos']); ?></h2>
-            <p><strong>Fecha de Nacimiento:</strong> <?php echo htmlspecialchars($cv['fecha_nacimiento']); ?></p>
-            <p><strong>Acerca de mí:</strong> <?php echo nl2br(htmlspecialchars($cv['acerca_de'])); ?></p>
-        </div>
+
+        <?php
+            }
+        } else {
+            echo "<p class='text-center'>No hay currículums guardados.</p>";
+        }
+        ?>
     </div>
-
-    <!-- Datos de contacto -->
-    <h2>Datos de contacto</h2>
-    <?php if (!empty($telefonos)): ?>
-        <p><strong>Teléfonos:</strong></p>
-        <ul>
-            <?php foreach ($telefonos as $telefono): ?>
-                <li><?php echo htmlspecialchars(trim($telefono)); ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <?php if (!empty($correos)): ?>
-        <p><strong>Correos Electrónicos:</strong></p>
-        <ul>
-            <?php foreach ($correos as $correo): ?>
-                <li><?php echo htmlspecialchars(trim($correo)); ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <?php if (!empty($paginasWeb)): ?>
-        <p><strong>Páginas WEB:</strong></p>
-        <ul>
-            <?php foreach ($paginasWeb as $paginaWeb): ?>
-                <li><?php echo htmlspecialchars(trim($paginaWeb)); ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <!-- Formación académica -->
-    <h2>Formación académica</h2>
-    <?php if (!empty($educacion)): ?>
-        <ul>
-            <?php foreach ($educacion as $edu): ?>
-                <li>
-                    <p><strong>Título:</strong> <?php echo htmlspecialchars($edu[0]); ?></p>
-                    <p><strong>Institución:</strong> <?php echo htmlspecialchars($edu[1]); ?></p>
-                    <p><strong>Fecha:</strong> <?php echo htmlspecialchars($edu[2]); ?></p>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <!-- Experiencia laboral -->
-    <h2>Experiencia laboral</h2>
-    <?php if (!empty($experiencia)): ?>
-        <ul>
-            <?php foreach ($experiencia as $exp): ?>
-                <li>
-                    <p><strong>Puesto:</strong> <?php echo htmlspecialchars($exp[0]); ?></p>
-                    <p><strong>Empresa:</strong> <?php echo htmlspecialchars($exp[1]); ?></p>
-                    <p><strong>Fecha de Inicio:</strong> <?php echo htmlspecialchars($exp[2]); ?></p>
-                    <p><strong>Fecha de Fin:</strong> <?php echo htmlspecialchars($exp[3]); ?></p>
-                    <p><strong>Descripción:</strong> <?php echo nl2br(htmlspecialchars($exp[4])); ?></p>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <!-- Botón para generar PDF -->
-    <form action="/Trabajo_final_SOA/Codigo/controlador/generate_pdf.php" method="post" target="_blank">
-        <input type="hidden" name="id" value="<?php echo $cvId; ?>">
-        <button type="submit" class="btn btn-success">Generar PDF</button>
-    </form>
-</main>
 </body>
 </html>

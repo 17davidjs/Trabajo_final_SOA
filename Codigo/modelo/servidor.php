@@ -74,9 +74,6 @@ switch ($datos["funcion"]) {
     case "subirFichero":
         subir($datos);
         break;
-    case "getAllCurriculums":
-        getAllCurriculums();
-        break;
     case "addCurriculum":
         addCurriculum($datos);
         break;
@@ -113,71 +110,89 @@ switch ($datos["funcion"]) {
 /****************************************************************************************************/
 // Funciones para la gestión de currículums
 /****************************************************************************************************/
-function getAllCurriculums() {
-    global $conn;
-    $sql = "SELECT * FROM curriculums";
-    $result = $conn->query($sql);
 
-    $curriculums = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $curriculums[] = $row;
+
+function addCurriculum($datos)
+{
+    global $conn;
+
+    // Datos básicos
+    $nombre = $datos['nombre'];
+    $apellidos = $datos['apellidos'];
+    $fecha_nacimiento = $datos['fecha_nacimiento'];
+    $datos_interes = $datos['datos_interes'];
+
+    // Manejar imagen
+    $imagen_path = '';
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $imagen_path = 'uploads/' . basename($_FILES['imagen']['name']);
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_path);
+    }
+
+    // Insertar usuario
+    $query = "INSERT INTO usuarios (nombre, apellidos, fecha_nacimiento, datos_interes, imagen_path) 
+              VALUES ('$nombre', '$apellidos', '$fecha_nacimiento', '$datos_interes', '$imagen_path')";
+    mysqli_query($conn, $query);
+    $usuario_id = mysqli_insert_id($conn);
+
+    // Insertar contacto
+    if (isset($datos['telefono'])) {
+        foreach ($datos['telefono'] as $index => $telefono) {
+            $correo = $datos['correo_electronico'][$index];
+            $paginaweb = $datos['paginaweb'][$index];
+            $query = "INSERT INTO contacto (usuario_id, telefono, correo_electronico, paginaweb) 
+                      VALUES ($usuario_id, '$telefono', '$correo', '$paginaweb')";
+            mysqli_query($conn, $query);
         }
     }
 
-    echo json_encode($curriculums);
-}
-
-function addCurriculum($data) {
-    global $conn;
-    $sql = "INSERT INTO curriculums (usuario_id, nombre, apellidos, fecha_nacimiento, direccion, correo_electronico, telefono, fecha_curriculum) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issssss", $data['usuario_id'], $data['nombre'], $data['apellidos'], $data['fecha_nacimiento'], $data['direccion'], $data['correo_electronico'], $data['telefono']);
-
-    if ($stmt->execute()) {
-        http_response_code(201);
-        echo json_encode(array("response" => 201, "texto" => "Currículum agregado correctamente"));
-    } else {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al agregar currículum: " . $stmt->error));
+    // Insertar educación
+    if (isset($datos['titulo'])) {
+        foreach ($datos['titulo'] as $index => $titulo) {
+            $institucion = $datos['institucion'][$index];
+            $fecha = $datos['fecha'][$index];
+            $query = "INSERT INTO educacion (usuario_id, titulo, institucion, fecha) 
+                      VALUES ($usuario_id, '$titulo', '$institucion', '$fecha')";
+            mysqli_query($conn, $query);
+        }
     }
 
-    $stmt->close();
-}
-
-function updateCurriculum($data) {
-    global $conn;
-    $sql = "UPDATE curriculums SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, direccion = ?, correo_electronico = ?, telefono = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssi", $data['nombre'], $data['apellidos'], $data['fecha_nacimiento'], $data['direccion'], $data['correo_electronico'], $data['telefono'], $data['id']);
-
-    if ($stmt->execute()) {
-        http_response_code(200);
-        echo json_encode(array("response" => 200, "texto" => "Currículum actualizado correctamente"));
-    } else {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al actualizar currículum: " . $stmt->error));
+    // Insertar idiomas
+    if (isset($datos['Idioma'])) {
+        foreach ($datos['Idioma'] as $index => $idioma) {
+            $nivel = $datos['nivel'][$index];
+            $query = "INSERT INTO idiomas (usuario_id, idioma, nivel) 
+                      VALUES ($usuario_id, '$idioma', '$nivel')";
+            mysqli_query($conn, $query);
+        }
     }
 
-    $stmt->close();
-}
-
-function deleteCurriculum($data) {
-    global $conn;
-    $sql = "DELETE FROM curriculums WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $data['id']);
-
-    if ($stmt->execute()) {
-        http_response_code(200);
-        echo json_encode(array("response" => 200, "texto" => "Currículum eliminado correctamente"));
-    } else {
-        http_response_code(500);
-        echo json_encode(array("response" => 500, "texto" => "Error al eliminar currículum: " . $stmt->error));
+    // Insertar experiencia laboral
+    if (isset($datos['puesto'])) {
+        foreach ($datos['puesto'] as $index => $puesto) {
+            $empresa = $datos['empresa'][$index];
+            $fecha_inicio = $datos['fecha_inicio'][$index];
+            $fecha_fin = $datos['fecha_fin'][$index];
+            $descripcion = $datos['descripcion'][$index];
+            $query = "INSERT INTO experiencia_laboral (usuario_id, puesto, empresa, fecha_inicio, fecha_fin, descripcion) 
+                      VALUES ($usuario_id, '$puesto', '$empresa', '$fecha_inicio', '$fecha_fin', '$descripcion')";
+            mysqli_query($conn, $query);
+        }
     }
 
-    $stmt->close();
+    // Insertar habilidades
+    if (isset($datos['habilidades'])) {
+        foreach ($datos['habilidades'] as $habilidad) {
+            $query = "INSERT INTO habilidades (usuario_id, habilidad) 
+                      VALUES ($usuario_id, '$habilidad')";
+            mysqli_query($conn, $query);
+        }
+    }
+
+    return ['response' => 200, 'texto' => 'Datos guardados con éxito.'];
 }
+
+
 /****************************************************************************************************/
 
 
