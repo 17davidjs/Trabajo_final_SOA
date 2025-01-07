@@ -44,9 +44,9 @@ require_once '../config/db.php';
         );
 
          // Mostrar el array por pantalla
-    echo '<pre>';
+    /*echo '<pre>';
     print_r($data);
-    echo '</pre>';
+    echo '</pre>';*/
         // Enviamos los datos al servidor.php usando cURL
         $handle = curl_init("http://localhost/Trabajo_final_SOA/Codigo/modelo/servidor.php");
         curl_setopt($handle, CURLOPT_POST, true);
@@ -66,11 +66,9 @@ require_once '../config/db.php';
             if (json_last_error() === JSON_ERROR_NONE)
             {
                 // Si la respuesta es JSON válida
-                echo "Respuesta del servidor: " . print_r($decodedResponse, true);
+                //echo "Respuesta del servidor: " . print_r($decodedResponse, true);
                 echo "<script>
-                        setTimeout(function() {
-                            window.location.href = '../index.php';
-                        }, 5000); // Redirige después de 5 segundos
+                            window.location.href = '../vista/loginForm.php';
                     </script>";
             }
             else

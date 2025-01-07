@@ -80,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    echo "Datos guardados con éxito.";
+    echo "<script>
+            alert('Datos guardados con éxito.');
+            setTimeout(function() {
+                window.location.href = '../vista/vercvForm.php';
+            }, 2000); // Redirige después de 2 segundos
+        </script>";
 }
 ?>

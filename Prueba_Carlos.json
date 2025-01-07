@@ -2,7 +2,8 @@
   "contacto": {
     "telefono": "123456789",
     "correo_electronico": "usuario@example.com",
-    "peginaweb": "https://usuario.com"
+    "paginaweb": "https://usuario.com",
+    "datos_interes": "Interesado en tecnologías emergentes y desarrollo de software."
   },
   "educacion": [
     {

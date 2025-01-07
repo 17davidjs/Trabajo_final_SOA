@@ -37,7 +37,12 @@ if(isset($_SESSION["usuario"]) && isset($_SESSION["token"]) ){
             if ($response === false) {
                 echo "Error en la solicitud cURL: " . curl_error($handle);
             } else {
-                echo "Respuesta del servidor: " . $response . "<br>";
+                echo "<script>
+                        alert('Datos guardados con éxito.');
+                        setTimeout(function() {
+                            window.location.href = '../vista/vercvForm.php';
+                        }, 2000); // Redirige después de 2 segundos
+                    </script>";
             }
     
             curl_close($handle);
